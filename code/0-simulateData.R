@@ -2,39 +2,7 @@
 source(here::here("code", "0-setup.R"))
 
 # -----------------------------------------------------------------------------
-# Functions for adding the outside good
-
-addOutsideGood <- function(data) {
-    numObs  = max(data$obsID)
-    numResp = max(data$respID)
-    numAlts = max(data$alt)
-    data_outsideGood = 0*data[1:numObs,]
-    data_outsideGood$outsideGood = 1
-    data$outsideGood = 0
-    data_outsideGood$order = seq(numAlts, (nrow(data) + (numAlts-1)), numAlts)
-    data$order = seq(1, nrow(data), 1)
-    data       = rbind(data, data_outsideGood)
-    data       = data[order(data$order),]
-    numAlts    = numAlts + 1
-    data       = addMetaData(data, numObs, numResp, numAlts)
-    data$order <- NULL
-    return(data)
-}
-
-addMetaData <- function(data, numObs, numResp, numAlts) {
-    varNames    = colnames(data)
-    varNames    = varNames[which(! varNames %in% c('respID', 'obsID', 'alt'))]
-    numQ        = numObs / numResp
-    data$respID = rep(seq(1, numResp), each=numQ*numAlts)
-    data$obsID  = rep(seq(1, numObs), each=numAlts)
-    data$alt    = rep(seq(1, numAlts), numObs)
-    row.names(data) = seq(nrow(data))
-    data = data[c('respID', 'obsID', 'alt', varNames)]
-    return(data)
-}
-
-# -----------------------------------------------------------------------------
-# Simulate data using conjointTools package
+# Make conjoint surveys and simulate choice data using {conjointTools}
 
 # Define the attributes and levels
 levels <- list(
@@ -48,7 +16,7 @@ levels <- list(
 doe <- makeDoe(levels)
 doe <- recodeDesign(doe, levels)
 
-# Make the survey
+# Make a survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
     nResp     = 1000, # Total number of respondents (upper bound)
@@ -56,8 +24,14 @@ survey <- makeSurvey(
     nQPerResp = 8     # Number of questions per respondent
 )
 
-# Make survey with outside good
-survey_og = addOutsideGood(survey)
+# Make a survey with outside good
+survey_og <- makeSurvey(
+    doe       = doe,  
+    nResp     = 1000, 
+    nAltsPerQ = 3,  
+    nQPerResp = 8,
+    outsideGood = TRUE
+)
 
 # Simulate choices based on a utility model
 data_mnl1 <- simulateChoices(
