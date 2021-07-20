@@ -1,14 +1,15 @@
 # Make conjoint surveys using the conjointTools package
 
 # Load libraries
-source(here::here("code", "0-setup.R"))
+library(conjointTools)
+library(fastDummies)
 
 # Define the attributes and levels
 levels <- list(
   price       = seq(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
   accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
-  powerTrain  = c("Gasoline", "Electric")
+  powertrain  = c("Gasoline", "Electric")
 )
 
 # Make a full-factorial design of experiment
@@ -28,13 +29,13 @@ survey <- makeSurvey(
 )
 head(survey) # preview
 
-# Make a labeld survey with "powerTrain" as the label
+# Make a labeld survey with "powertrain" as the label
 survey_labeled <- makeSurvey(
     doe       = doe,  
     nResp     = 1000, 
     nAltsPerQ = 3,  
     nQPerResp = 8,
-    group     = "powerTrain"
+    group     = "powertrain"
 )
 head(survey_labeled) # preview
 

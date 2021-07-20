@@ -1,11 +1,13 @@
 # Make conjoint surveys and simulate choice data using {conjointTools}
 
 # Load libraries
-source(here::here("code", "0-setup.R"))
+library(conjointTools)
+library(readr)
+library(here)
 
 # Define the attributes and levels
 levels <- list(
-  price       = seq(15, 20, 25), # Price ($1,000)
+  price       = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
   accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
   elec        = c(0, 1)          # Electric vehicle (1) or gas (0)
@@ -68,9 +70,9 @@ data_og <- simulateChoices(
 )
 
 # Recode powertrain variable using a character
-data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'elec', 'gas')
-data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'elec', 'gas')
-data_og$powertrain <- ifelse(data_og$elec == 1, 'elec', 'gas')
+data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'Electric', 'Gasoline')
+data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'Electric', 'Gasoline')
+data_og$powertrain <- ifelse(data_og$elec == 1, 'Electric', 'Gasoline')
 
 # Rearrange column names
 varNames <- c(
@@ -87,6 +89,6 @@ temp$group <- 'A'
 data_mnl_2groups <- rbind(temp, data_mnl2)
 
 # Save data
-write_csv(data_mnl1, here::here('data', 'data_mnl.csv'))
-write_csv(data_mnl_2groups, here::here('data', 'data_mnl_2groups.csv'))
-write_csv(data_og, here::here('data', 'data_og.csv'))
+write_csv(data_mnl1, here('data', 'data_mnl.csv'))
+write_csv(data_mnl_2groups, here('data', 'data_mnl_2groups.csv'))
+write_csv(data_og, here('data', 'data_og.csv'))
