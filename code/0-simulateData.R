@@ -1,8 +1,7 @@
+# Make conjoint surveys and simulate choice data using {conjointTools}
+
 # Load libraries
 source(here::here("code", "0-setup.R"))
-
-# -----------------------------------------------------------------------------
-# Make conjoint surveys and simulate choice data using {conjointTools}
 
 # Define the attributes and levels
 levels <- list(
