@@ -3,7 +3,7 @@
 # Install packages from CRAN
 install.packages(c(
     "cowplot",
-    "fastDummies"
+    "fastDummies",
     "ggrepel",
     "here",
     "janitor",

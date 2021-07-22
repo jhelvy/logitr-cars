@@ -1,0 +1,46 @@
+# Make conjoint surveys using the conjointTools package
+
+# Load libraries
+library(conjointTools)
+library(fastDummies)
+library(tidyverse)
+
+# Define the attributes and levels
+levels <- list(
+  price       = seq(15, 20, 25), # Price ($1,000)
+  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
+  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
+  powertrain  = c("Gasoline", "Electric"), 
+  range       = c(100, 150, 200, 250) # EV driving range
+)
+
+# Make a full-factorial design of experiment
+doe <- makeDoe(levels)
+head(doe) # preview
+
+# Recode the design of experiment
+doe <- recodeDesign(doe, levels)
+head(doe) # preview
+
+# Make a basic survey
+survey <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 1000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 8     # Number of questions per respondent
+)
+head(survey) # preview
+
+# The "range" attribute only applies to the case where "powertrain" = Electric
+# To account for this, you can dummy-code the "range" variables, then make
+# "range" equal to 0 for cases where "powertrain" = Gasoline
+survey <- dummy_cols(survey, "range") %>% 
+  mutate(
+    range_100 = ifelse(powertrain == "Gasoline", 0, range_100),
+    range_150 = ifelse(powertrain == "Gasoline", 0, range_150),
+    range_200 = ifelse(powertrain == "Gasoline", 0, range_200),
+    range_250 = ifelse(powertrain == "Gasoline", 0, range_250)
+  )
+
+# Keep in mind now that when you run your model, you'll need to choose 
+# one level for "range" as the reference level. 
