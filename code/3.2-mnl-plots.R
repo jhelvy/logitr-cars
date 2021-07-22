@@ -1,8 +1,22 @@
-# Load libraries and functions
-source('./code/1.1-loadTools.R')
+# Visualize results of estimated multinomial logit (mnl) models 
 
-# Load and run linear model:
-source('./code/3.1-linear_model.R')
+# Load libraries
+library(tidyverse)
+library(here)
+
+# Read in estimated models
+model <- readRDS(here("output", "mnl_model.Rds"))
+
+# -----------------------------------------------------------------------------
+# Some tips for working with model objects
+
+# If you want to get the resulting model parameters, use the coef() function
+coef(model)
+
+# If you want to get the full summary table of the model coefficients 
+# as a data frame, use coef(summary(model)) 
+coef(summary(model))
+
 
 # -----------------------------------------------------------------------------
 # Plot results

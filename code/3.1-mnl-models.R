@@ -42,6 +42,9 @@ model$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model$hessian)$values
 
+# Save estimated model object
+saveRDS(model, here("output", "mnl_model.Rds"))
+
 # -----------------------------------------------------------------------------
 # Estimate MNL model where all covariates are dummy-coded
 
@@ -73,12 +76,5 @@ model_dummy$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model_dummy$hessian)$values
 
-# -----------------------------------------------------------------------------
-# Some tips for working with model objects
-
-# If you want to get the resulting model parameters, use the coef() function
-coef(model)
-
-# If you want to get the full summary table of the model coefficients 
-# as a data frame, use coef(summary(model)) 
-coef(summary(model))
+# Save estimated model object
+saveRDS(model_dummy, here("output", "model_dummy.Rds"))
