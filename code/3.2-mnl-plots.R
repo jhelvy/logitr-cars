@@ -17,18 +17,21 @@ coef(model)
 # as a data frame, use coef(summary(model)) 
 coef(summary(model))
 
-
 # -----------------------------------------------------------------------------
 # Plot results
 
-# Get the model coefficients:
-coefs = coef(model_linear)
-coefs
+# Define the attributes and levels
+levels <- list(
+  price       = c(15, 20, 25), # Price ($1,000)
+  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
+  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
+  powertrain  = c("Gasoline", "Electric")
+)
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
 #   utility = The utility associated with each level (y-axis)
-df_price = data %>%
+df_price = levels$price
     distinct(level = price) %>%
     arrange(level) %>%
     mutate(utility = (level - min(level)) * coefs['price'])

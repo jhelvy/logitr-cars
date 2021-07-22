@@ -7,7 +7,7 @@ library(tidyverse)
 
 # Define the attributes and levels
 levels <- list(
-  price       = seq(15, 20, 25), # Price ($1,000)
+  price       = c(15, 20, 25),   # Price ($1,000)
   fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
   accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
   powertrain  = c("Gasoline", "Electric"), 
