@@ -80,5 +80,5 @@ eigen(model_dummy$hessian)$values
 save(
     model, 
     model_dummy, 
-    file = here("output", "models.RData")
+    file = here("output", "mnl_models.RData")
 )

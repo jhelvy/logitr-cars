@@ -1,18 +1,22 @@
 # Visualize results of estimated multinomial logit (mnl) models 
 
 # Load libraries
+# library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
 
-# Read in estimated models
-model <- readRDS(here("output", "mnl_model.Rds"))
+# Load estimated models
+load(here("output", "mnl_models.RData"))
 
 # -----------------------------------------------------------------------------
 # Some tips for working with model objects
 
 # If you want to get the resulting model parameters, use the coef() function
 coef(model)
+
+# If you want the standard errors, use se()
+se(model)
 
 # If you want to get the full summary table of the model coefficients 
 # as a data frame, use coef(summary(model)) 
