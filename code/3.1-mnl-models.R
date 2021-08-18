@@ -4,6 +4,7 @@
 library(tidyverse)
 library(logitr)
 library(here)
+options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
@@ -26,10 +27,10 @@ head(data)
 
 # Estimate the model
 model <- logitr(
-    data = data,
-    choiceName = "choice",
-    obsIDName  = "obsID",
-    parNames   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
+    data   = data,
+    choice = "choice",
+    obsID  = "obsID",
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
 )
 
 # View summary of results
@@ -42,9 +43,6 @@ model$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model$hessian)$values
 
-# Save estimated model object
-saveRDS(model, here("output", "mnl_model.Rds"))
-
 # -----------------------------------------------------------------------------
 # Estimate MNL model where all covariates are dummy-coded
 
@@ -55,10 +53,10 @@ head(data_dummy)
 
 # Estimate the model
 model_dummy <- logitr(
-    data = data_dummy,
-    choiceName = "choice",
-    obsIDName  = "obsID",
-    parNames   = c(
+    data   = data_dummy,
+    choice = "choice",
+    obsID  = "obsID",
+    pars   = c(
         # Remember one level must be "dummied out"
         "price_20", "price_25", 
         "fuelEconomy_25", "fuelEconomy_30", 
@@ -76,5 +74,11 @@ model_dummy$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model_dummy$hessian)$values
 
-# Save estimated model object
-saveRDS(model_dummy, here("output", "model_dummy.Rds"))
+# -----------------------------------------------------------------------------
+# Save model objects 
+
+save(
+    model, 
+    model_dummy, 
+    file = here("output", "models.RData")
+)
