@@ -31,16 +31,17 @@ survey <- makeSurvey(
 )
 head(survey) # preview
 
-# The "range" attribute only applies to the case where "powertrain" = Electric
-# To account for this, you can dummy-code the "range" variables, then make
-# "range" equal to 0 for cases where "powertrain" = Gasoline
+# The "range" attribute only applies to the case where "powertrain" == Electric
+# To account for this, set "range" equal to 0 for cases where
+# "powertrain" = Gasoline
+survey <- survey %>%
+  mutate(range = ifelse(powertrain == "Gasoline", 0, range))
+head(survey) # preview
+
+# Now create dummy-coded variables for each level of range
 survey <- dummy_cols(survey, "range") %>% 
-  mutate(
-    range_100 = ifelse(powertrain == "Gasoline", 0, range_100),
-    range_150 = ifelse(powertrain == "Gasoline", 0, range_150),
-    range_200 = ifelse(powertrain == "Gasoline", 0, range_200),
-    range_250 = ifelse(powertrain == "Gasoline", 0, range_250)
-  )
+  select(-range_0)
+head(survey) # preview
 
 # Keep in mind now that when you run your model, you'll need to choose 
 # one level for "range" as the reference level. 
