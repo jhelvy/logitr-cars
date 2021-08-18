@@ -17,5 +17,4 @@ install.packages(c(
 ))
 
 # Install development packages from GitHub
-remotes::install_github("jhelvy/logitr")
 remotes::install_github("jhelvy/conjointTools")

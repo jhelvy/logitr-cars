@@ -36,31 +36,33 @@ survey_og <- makeSurvey(
 
 # Simulate choices based on a utility model
 data_mnl1 <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price       = -0.7,
         fuelEconomy = 0.1,
         accelTime   = -0.2,
         elec        = -4.0)
 )
+
 # Choices using a different utility model
 data_mnl2 <- simulateChoices(
     survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price       = -0.6,
         fuelEconomy = 0.15,
         accelTime   = -0.3,
         elec        = -1.0)
 )
+
 # Choices for outside good model
 data_og <- simulateChoices(
     survey    = survey_og,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price       = -0.7,
         fuelEconomy = 0.1,
