@@ -1,8 +1,8 @@
-# Estimate multinomial logit (mnl) models using the logitr package
+# Estimate multinomial logit (mnl) models
 
 # Load libraries
-library(tidyverse)
 library(logitr)
+library(tidyverse)
 library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -21,27 +21,6 @@ head(data)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
 # "powertrain"  = Indicates if the car is electric or gas
-
-# -----------------------------------------------------------------------------
-# Estimate MNL model with price, fuelEconomy, accelTime, and powertrain
-
-# Estimate the model
-model <- logitr(
-    data   = data,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
-)
-
-# View summary of results
-summary(model)
-
-# Check the 1st order condition: Is the gradient at the solution zero?
-model$gradient
-
-# 2nd order condition: Is the hessian negative definite?
-# (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model where all covariates are dummy-coded
@@ -75,10 +54,31 @@ model_dummy$gradient
 eigen(model_dummy$hessian)$values
 
 # -----------------------------------------------------------------------------
+# Estimate MNL model with linear price, fuelEconomy, and accelTime
+
+# Estimate the model
+model_linear <- logitr(
+    data   = data,
+    choice = "choice",
+    obsID  = "obsID",
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
+)
+
+# View summary of results
+summary(model_linear)
+
+# Check the 1st order condition: Is the gradient at the solution zero?
+model_linear$gradient
+
+# 2nd order condition: Is the hessian negative definite?
+# (If all the eigenvalues are negative, the hessian is negative definite)
+eigen(model_linear$hessian)$values
+
+# -----------------------------------------------------------------------------
 # Save model objects 
 
 save(
-    model, 
-    model_dummy, 
-    file = here("output", "mnl_models.RData")
+    model_dummy,
+    model_linear,
+    file = here("output", "model_mnl.RData")
 )
