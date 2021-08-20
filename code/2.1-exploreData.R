@@ -6,7 +6,7 @@ library(here)
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'data_mnl.csv'))
+data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
 # Variables:

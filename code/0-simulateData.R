@@ -20,7 +20,7 @@ doe <- recodeDesign(doe, levels)
 # Make a survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
-    nResp     = 1000, # Total number of respondents (upper bound)
+    nResp     = 100, # Total number of respondents (upper bound)
     nAltsPerQ = 3,    # Number of alternatives per question
     nQPerResp = 8     # Number of questions per respondent
 )
@@ -28,7 +28,7 @@ survey <- makeSurvey(
 # Make a survey with outside good
 survey_og <- makeSurvey(
     doe       = doe,  
-    nResp     = 1000, 
+    nResp     = 100, 
     nAltsPerQ = 3,  
     nQPerResp = 8,
     outsideGood = TRUE
@@ -91,6 +91,6 @@ temp$group <- 'A'
 data_mnl_2groups <- rbind(temp, data_mnl2)
 
 # Save data
-write_csv(data_mnl1, here('data', 'data_mnl.csv'))
-write_csv(data_mnl_2groups, here('data', 'data_mnl_2groups.csv'))
-write_csv(data_og, here('data', 'data_og.csv'))
+write_csv(data_mnl1, here('data', 'mnl.csv'))
+write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
+write_csv(data_og, here('data', 'og.csv'))

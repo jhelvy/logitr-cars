@@ -7,10 +7,10 @@ library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the estimated model
-load(here("output", "model_mnl.RData"))
+load(here("models", "mnl.RData"))
 
 # Get the model coefficients
-coefs <- coef(model_linear)
+coefs <- coef(mnl_linear)
 coefs
 
 # Compute WTP estimates
@@ -19,7 +19,7 @@ wtp <- coefs / (-1*coefs['price'])
 # Compute WTP with uncertainty:
 
 # Get the model coefficients and covariance matrix
-covariance <- vcov(model_linear)
+covariance <- vcov(mnl_linear)
 
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))

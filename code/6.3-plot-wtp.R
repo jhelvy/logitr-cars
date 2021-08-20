@@ -1,6 +1,7 @@
 # Visualize results of estimated WTP space model
 
 # Load libraries
+library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
@@ -9,16 +10,16 @@ library(cowplot)
 # Get WTP estimates with 95% CI
 
 # Method 1: Computed WTP from preference space model:
-load(here("output", "model_mnl.RData")) # Load pref space model
-coefs <- coef(model_linear)
-covariance <- vcov(model_linear)
+load(here("models", "mnl.RData")) # Load pref space model
+coefs <- coef(mnl_linear)
+covariance <- vcov(mnl_linear)
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
 wtp_ci1 <- getCI(wtp_draws)
 wtp_ci1
 
 # Method 2: Estimate WTP in WTP space model:
-load(here("output", "model_wtp.RData")) # Load estimated models
+load(here("models", "mnl_wtp.RData")) # Load estimated models
 coefs <- coef(model_wtp)
 covariance <- vcov(model_wtp)
 wtp_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
@@ -101,7 +102,7 @@ plot_mnl_wtp <- plot_grid(
 
 # Save plots 
 ggsave(
-  filename = here('figs', 'plot_mnl_wtp.png'), 
+  filename = here('figs', 'mnl_wtp.png'), 
   plot = plot_mnl_wtp, 
   width = 8, height = 2.3
 )

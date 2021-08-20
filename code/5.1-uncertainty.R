@@ -11,11 +11,11 @@ source(here("code", "0-functions.R"))
 # Compute 95% confidence interval using simulation
 
 # Load estimated models
-load(here("output", "model_mnl.RData"))
+load(here("models", "mnl.RData"))
 
 # Get the model coefficients and covariance matrix
-coefs <- coef(model_linear)
-covariance <- vcov(model_linear)
+coefs <- coef(mnl_linear)
+covariance <- vcov(mnl_linear)
 
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
@@ -114,9 +114,10 @@ plot_mnl_linear_unc <- plot_grid(
 
 # Save plots 
 ggsave(
-    filename = here('figs', 'plot_mnl_linear_unc.png'), 
+    filename = here('figs', 'mnl_linear_unc.png'), 
     plot = plot_mnl_linear_unc, 
-    width = 10, height = 2.3)
+    width = 10, height = 2.3
+)
 
 
 

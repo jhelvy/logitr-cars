@@ -1,31 +1,32 @@
 # Visualize results of estimated multinomial logit (mnl) models 
 
 # Load libraries
+library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
 
 # Load estimated models
-load(here("output", "model_mnl.RData"))
+load(here("models", "mnl.RData"))
 
 # -----------------------------------------------------------------------------
 # Some tips for working with model objects
 
 # If you want to get the resulting model parameters, use the coef() function
-coef(model_dummy)
+coef(mnl_dummy)
 
 # If you want the standard errors, use se()
-se(model_dummy)
+se(mnl_dummy)
 
 # If you want to get the full summary table of the model coefficients 
 # as a data frame, use coef(summary(model)) 
-coef(summary(model_dummy))
+coef(summary(mnl_dummy))
 
 # -----------------------------------------------------------------------------
 # Plot results
 
 # Get the estimated coefficients
-coefs <- coef(model_dummy)
+coefs <- coef(mnl_dummy)
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
@@ -90,6 +91,7 @@ plot_mnl_dummy <- plot_grid(
 
 # Save plots 
 ggsave(
-  filename = here('figs', 'plot_mnl_dummy.png'), 
+  filename = here('figs', 'mnl_dummy.png'), 
   plot = plot_mnl_dummy, 
-  width = 10, height = 2.3)
+  width = 10, height = 2.3
+)

@@ -1,18 +1,19 @@
 # Visualize results of estimated multinomial logit (mnl) models 
 
 # Load libraries
+library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
 
 # Load estimated models
-load(here("output", "model_og.RData"))
+load(here("models", "mnl_og.RData"))
 
 # -----------------------------------------------------------------------------
 # Plot results
 
 # Get the estimated coefficients
-coefs <- coef(model_og)
+coefs <- coef(mnl_og)
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
@@ -83,6 +84,7 @@ plots_og <- plot_grid(
 
 # Save plots 
 ggsave(
-  filename = here('figs', 'plots_og.png'), 
+  filename = here('figs', 'mnl_og.png'), 
   plot = plots_og, 
-  width = 12, height = 2.3)
+  width = 12, height = 2.3
+)

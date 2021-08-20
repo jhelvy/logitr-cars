@@ -8,7 +8,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data_og <- read_csv(here('data', 'data_og.csv'))
+data_og <- read_csv(here('data', 'og.csv'))
 head(data)
 
 # Variables:
@@ -27,7 +27,7 @@ head(data)
 # Estimate MNL model with outside good
 
 # Estimate the model
-model_og <- logitr(
+mnl_og <- logitr(
     data   = data_og,
     choice = "choice",
     obsID  = "obsID",
@@ -35,17 +35,17 @@ model_og <- logitr(
 )
 
 # View summary of results
-summary(model_og)
+summary(mnl_og)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-model_og$gradient
+mnl_og$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model_og$hessian)$values
+eigen(mnl_og$hessian)$values
 
 # Save model object
 save(
-    model_og, 
-    file = here("output", "model_og.RData")
+    mnl_og, 
+    file = here("models", "mnl_og.RData")
 )

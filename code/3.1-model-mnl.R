@@ -3,12 +3,13 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
+library(fastDummies)
 library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'data_mnl.csv'))
+data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
 # Variables:
@@ -31,7 +32,7 @@ data_dummy <- dummy_cols(
 head(data_dummy)
 
 # Estimate the model
-model_dummy <- logitr(
+mnl_dummy <- logitr(
     data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
@@ -44,20 +45,20 @@ model_dummy <- logitr(
 )
 
 # View summary of results
-summary(model_dummy)
+summary(mnl_dummy)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-model_dummy$gradient
+mnl_dummy$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model_dummy$hessian)$values
+eigen(mnl_dummy$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
 # Estimate the model
-model_linear <- logitr(
+mnl_linear <- logitr(
     data   = data,
     choice = "choice",
     obsID  = "obsID",
@@ -65,20 +66,20 @@ model_linear <- logitr(
 )
 
 # View summary of results
-summary(model_linear)
+summary(mnl_linear)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-model_linear$gradient
+mnl_linear$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model_linear$hessian)$values
+eigen(mnl_linear$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Save model objects 
 
 save(
-    model_dummy,
-    model_linear,
-    file = here("output", "model_mnl.RData")
+    mnl_dummy,
+    mnl_linear,
+    file = here("models", "mnl.RData")
 )

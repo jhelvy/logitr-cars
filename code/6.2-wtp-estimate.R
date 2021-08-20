@@ -7,11 +7,11 @@ library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the data set:
-data <- read_csv(here('data', 'data_mnl.csv'))
+data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
 # Estimate the model
-model_wtp <- logitr(
+mnl_wtp <- logitr(
     data   = data,
     choice = "choice",
     obsID  = "obsID",
@@ -22,21 +22,21 @@ model_wtp <- logitr(
 )
 
 # View summary of results
-summary(model_wtp)
+summary(mnl_wtp)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-model_wtp$gradient
+mnl_wtp$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model_wtp$hessian)$values
+eigen(mnl_wtp$hessian)$values
 
 # Compare computed versus estimated WTP
-load(here("output", "model_mnl.RData"))
-wtpCompare(model_linear, model_wtp, price = 'price')
+load(here("models", "mnl.RData"))
+wtpCompare(mnl_linear, mnl_wtp, price = 'price')
 
 # Save model
 save(
-    model_wtp,
-    file = here("output", "model_wtp.RData")
+    mnl_wtp,
+    file = here("models", "mnl_wtp.RData")
 )
