@@ -58,4 +58,3 @@ save(
     model_wtp,
     file = here("output", "model_wtp.RData")
 )
-

@@ -10,6 +10,7 @@ install.packages(c(
     "kableExtra",
     "knitr",
     "logitr",
+    "MASS",
     "remotes",
     "rmarkdown",
     "tidyverse",
