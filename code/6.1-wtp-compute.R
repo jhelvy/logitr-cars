@@ -1,31 +1,32 @@
-# Load libraries and functions
-source('./code/1.1-loadTools.R')
+# Compute WTP from estimated "preference space" model
 
-# Load and run linear model:
-source('./code/3.1-linear_model.R')
+# Load libraries
+library(logitr)
+library(tidyverse)
+library(here)
+options(dplyr.width = Inf) # So you can see all of the columns
 
-# -----------------------------------------------------------------------------
-# Compute the WTP implied from the preference space model
+# Load the estimated model
+load(here("output", "model_mnl.RData"))
 
-# Get the model coefficients:
-coefs = coef(model_linear)
+# Get the model coefficients
+coefs <- coef(model_linear)
 coefs
 
-# Compute WTP:
-wtp = coefs / (-1*coefs['price'])
-wtp
+# Compute WTP estimates
+wtp <- coefs / (-1*coefs['price'])
 
-# -----------------------------------------------------------------------------
-# Compute the WTP with uncertainty
+# Compute WTP with uncertainty:
 
-# Generate draws of coefficients:
-coef_draws = getCoefDraws(model_linear, numDraws = 10^4)
-head(coef_draws)
+# Get the model coefficients and covariance matrix
+covariance <- vcov(model_linear)
 
-# Compute WTP for each coefficient draw:
+# Take 10,000 draws of the coefficients
+coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+
+# Compute WTP for each coefficient draw
 wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
 head(wtp_draws)
 
-# For each coefficient, get the mean and 95% confidence interval of WTP:
-wtp = getCI(wtp_draws)
-wtp
+# For each coefficient, get the mean and 95% confidence interval of WTP
+wtp_unc <- getCI(wtp_draws)

@@ -1,29 +1,10 @@
-# Estimate WTP 
+# Directly estimate WTP using a "WTP Space" model
 
 # Load libraries
 library(logitr)
 library(tidyverse)
 library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
-
-# -----------------------------------------------------------------------------
-# Compute WTP from estimated "preference space" model
-
-load(here("output", "model_mnl.RData"))
-
-# Get the model coefficients
-coefs <- coef(model_linear)
-coefs
-
-# Compute WTP estimates
-coefs / (-1*coefs['price'])
-
-# Use wtp function to get standard errors on wtp
-wtp <- wtp(model_linear, "price")
-wtp
-
-# -----------------------------------------------------------------------------
-# Directly estimate WTP using a "WTP Space" model
 
 # Load the data set:
 data <- read_csv(here('data', 'data_mnl.csv'))
@@ -51,6 +32,7 @@ model_wtp$gradient
 eigen(model_wtp$hessian)$values
 
 # Compare computed versus estimated WTP
+load(here("output", "model_mnl.RData"))
 wtpCompare(model_linear, model_wtp, price = 'price')
 
 # Save model

@@ -17,11 +17,11 @@ load(here("output", "model_mnl.RData"))
 coefs <- coef(model_linear)
 covariance <- vcov(model_linear)
 
-# Take 10,000 draws of the coefficientsk
-draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+# Take 10,000 draws of the coefficients
+coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 
 # For each coefficient, get the mean and 95% confidence interval:
-coef_ci <- getCI(draws, ci = 0.95)
+coef_ci <- getCI(coef_draws, ci = 0.95)
 coef_ci
 
 # -----------------------------------------------------------------------------
