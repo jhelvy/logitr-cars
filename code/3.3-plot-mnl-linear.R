@@ -31,13 +31,19 @@ coefs <- coef(model_linear)
 #   level   = The attribute level (x-axis)
 #   utility = The utility associated with each level (y-axis)
 df_price <- data.frame(level = c(15, 20, 25)) %>% 
-    mutate(utility = coefs['price']*(level - min(level)))
+    mutate(
+      diff    = level - min(level),
+      utility = diff*coefs['price'])
     
 df_fuelEconomy <- data.frame(level = c(20, 25, 30)) %>% 
-    mutate(utility = coefs['fuelEconomy']*(level - min(level)))
+    mutate(
+      diff    = level - min(level),
+      utility = diff*coefs['fuelEconomy'])
     
 df_accelTime <- data.frame(level = c(6, 7, 8)) %>% 
-    mutate(utility = coefs['accelTime']*(level - min(level)))
+    mutate(
+      diff    = level - min(level),
+      utility = diff*coefs['accelTime'])
     
 df_powertrain = data.frame(level = c("Electric", "Gasoline")) %>% 
     mutate(utility = c(0, coefs['powertrainGasoline']))
