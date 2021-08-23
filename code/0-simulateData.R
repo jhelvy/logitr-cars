@@ -8,9 +8,9 @@ library(here)
 # Define the attributes and levels
 levels <- list(
   price       = c(15, 20, 25), # Price ($1,000)
-  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
-  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
-  elec        = c(0, 1)          # Electric vehicle (1) or gas (0)
+  fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
+  accelTime   = c(6, 7, 8),    # 0-60 mph acceleration time (s)
+  electric    = c(0, 1)        # Electric vehicle (1) or gas (0)
 )
 
 # Make a full-factorial design of experiment, then recode the levels
@@ -43,7 +43,7 @@ data_mnl1 <- simulateChoices(
         price       = -0.7,
         fuelEconomy = 0.1,
         accelTime   = -0.2,
-        elec        = -4.0)
+        electric    = -4.0)
 )
 
 # Choices using a different utility model
@@ -55,8 +55,12 @@ data_mnl2 <- simulateChoices(
         price       = -0.6,
         fuelEconomy = 0.15,
         accelTime   = -0.3,
-        elec        = -1.0)
+        electric    = -1.0)
 )
+
+# Recode powertrain variable using a character
+data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'Electric', 'Gasoline')
+data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'Electric', 'Gasoline')
 
 # Choices for outside good model
 data_og <- simulateChoices(
@@ -67,22 +71,17 @@ data_og <- simulateChoices(
         price       = -0.7,
         fuelEconomy = 0.1,
         accelTime   = -0.2,
-        elec        = -4.0, 
+        electric    = -4.0, 
         outsideGood = -15.0)
 )
-
-# Recode powertrain variable using a character
-data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'Electric', 'Gasoline')
-data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'Electric', 'Gasoline')
-data_og$powertrain <- ifelse(data_og$elec == 1, 'Electric', 'Gasoline')
 
 # Rearrange column names
 varNames <- c(
     'respID', 'obsID', 'qID', 'altID', 'choice', 'price', 'fuelEconomy',
-    'accelTime', 'powertrain')
-data_mnl1 <- data_mnl1[varNames]
-data_mnl2 <- data_mnl2[varNames]
-data_og <- data_og[c(varNames, 'outsideGood')]
+    'accelTime')
+data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
+data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
+data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
 
 # Create "2groups" data by combining data_mnl1 and data_mnl2
 data_mnl2$group <- 'B' 

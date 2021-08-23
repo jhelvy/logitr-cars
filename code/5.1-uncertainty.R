@@ -126,8 +126,8 @@ ggsave(
 # Dummy model
 
 # Get the model coefficients and covariance matrix
-coefs <- coef(model_dummy)
-covariance <- vcov(model_dummy)
+coefs <- coef(mnl_dummy)
+covariance <- vcov(mnl_dummy)
 draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 coef_ci <- getCI(draws, ci = 0.95)
 coef_ci

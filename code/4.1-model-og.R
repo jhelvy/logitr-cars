@@ -9,7 +9,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 # -----------------------------------------------------------------------------
 # Load the data set:
 data_og <- read_csv(here('data', 'og.csv'))
-head(data)
+head(data_og)
 
 # Variables:
 # "respID"      = Identifies each survey respondent
@@ -20,7 +20,7 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gas
+# "electric"    = Indicates if the car is electric or gas
 # "outsideGood" = Indicates the outside good alternative
 
 # -----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ mnl_og <- logitr(
     data   = data_og,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain', 'outsideGood')
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'electric', 'outsideGood')
 )
 
 # View summary of results

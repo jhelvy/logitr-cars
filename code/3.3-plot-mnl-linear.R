@@ -7,7 +7,7 @@ library(here)
 library(cowplot)
 
 # Load estimated models
-load(here("output", "mnl.RData"))
+load(here("models", "mnl.RData"))
 
 # -----------------------------------------------------------------------------
 # Some tips for working with model objects
