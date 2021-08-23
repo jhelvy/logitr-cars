@@ -20,8 +20,8 @@ wtp_ci1
 
 # Method 2: Estimate WTP in WTP space model:
 load(here("models", "mnl_wtp.RData")) # Load estimated models
-coefs <- coef(model_wtp)
-covariance <- vcov(model_wtp)
+coefs <- coef(mnl_wtp)
+covariance <- vcov(mnl_wtp)
 wtp_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 wtp_ci2 <- getCI(wtp_draws)
 wtp_ci2 <- wtp_ci2[-1,] # Drop lambda (we won't plot this)
