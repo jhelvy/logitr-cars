@@ -13,7 +13,7 @@ data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
 # -----------------------------------------------------------------------------
-# Simulation using the linear model
+# Single market simulation using the linear model
 
 head(data)
 summary(mnl_linear)
@@ -40,8 +40,26 @@ sim_mnl_linear <- predictProbs(
 
 sim_mnl_linear
 
+# -----------------------------------------------------------------------------
+# Multiple simulations using the linear model
+
+# Read in market scenarios
+scenarios <- read_csv(here('data', 'scenarios.csv'))
+head(scenarios)
+
+# Use the predictProbs() function to compute the probabilities
+sim_mnl_linear_multi <- predictProbs(
+    model = mnl_linear,
+    alts = scenarios, 
+    altID = 'altID',
+    obsID = 'obsID', 
+    ci = 0.95)
+
+head(sim_mnl_linear_multi)
+
 # Save simulations
 save(
     sim_mnl_linear,
+    sim_mnl_linear_multi,
     file = here("sims", "mnl_linear.RData")
 )
