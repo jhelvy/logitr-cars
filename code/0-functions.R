@@ -8,3 +8,10 @@ getCI <- function(data, ci = 0.95) {
     upper = apply(data, 2, function(x) quantile(x, 1 - alpha, na.rm = TRUE)))
   return(df)
 }
+
+# Repeats a data frame n times
+repDf <- function(df, n) {
+  result <- df[rep(seq_len(nrow(df)), n), ]
+  row.names(result) <- NULL
+  return(result)
+}

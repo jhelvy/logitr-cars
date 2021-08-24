@@ -18,7 +18,7 @@ head(data)
 head(data)
 summary(mnl_linear)
 
-# Create a set of alternatives for which to simulate shares. 
+# Create a set of alternatives for which to simulate shares
 alts <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),

@@ -1,0 +1,121 @@
+# Measure the sensitivity of the market simulation outcome for one product to
+# changes in attribute levels
+
+# Load libraries & functions
+library(tidyverse)
+library(here)
+library(logitr)
+library(jph)
+
+# Load estimated models
+load(here("models", "mnl.RData"))
+
+# Load data
+data <- read_csv(here('data', 'mnl.csv'))
+head(data)
+
+# -----------------------------------------------------------------------------
+# Sensitivity of market share to changes in *price*
+
+# Create a set of alternatives for which to simulate shares
+alts <- data.frame(
+    altID       = c(1, 2, 3), 
+    obsID       = c(1, 1, 1),
+    price       = c(15, 25, 21),
+    fuelEconomy = c(20, 100, 40),
+    accelTime   = c(8, 6, 7),
+    powertrain  = c("Gasoline", "Electric", "Gasoline"))
+
+alts 
+
+# Define the sensitivity cases
+# For this case, let's see how the market share for the Electric Vehicle 
+# (option 2) changes with different market prices:
+
+prices <- seq(10, 30) # Define sensitivity price levels
+n <- length(prices) # Number of simulations (20)
+scenarios_price <- repDf(alts, n) # Repeat the alts data frame n times
+scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
+
+# Set the price for each scenario
+scenarios_price$price[which(scenarios_price$altID == 2)] <- prices 
+
+head(scenarios_price)
+
+# For each case, simulate the market share predictions
+sens_price <- predictProbs(
+    model = mnl_linear,
+    alts = scenarios_price, 
+    altID = 'altID',
+    obsID = 'obsID', 
+    ci = 0.95) %>% 
+    # Add scenario attributes to predictions
+    left_join(scenarios_price) %>% 
+    filter(altID == 2) %>% # Keep only EV alternative
+    select(price, starts_with("prob_")) # Keep only prices and predictions
+
+sens_price
+# The probability shifts from essentially 100% of the market share at 
+# a price of $10,000 to 0% at $30,000
+
+# -----------------------------------------------------------------------------
+# Sensitivity of market share to changes in multiple attributes
+
+# For these cases, we'll look at how the market share for the Electric Vehicle 
+# (option 2) changes with +/- 20% changes price, fuel economy, & acceleration time
+
+# In this data frame, cases are "high" if they result in higher market shares
+# and "low" if they result in lower market shares
+cases <- tribble(
+    ~obsID, ~altID, ~attribute,    ~case,  ~value,
+    2,      2,     'price',       'high',  25*0.8,
+    3,      2,     'price',       'low',   25*1.2,
+    4,      2,     'fuelEconomy', 'high',  100*1.2,
+    5,      2,     'fuelEconomy', 'low',   100*0.8,
+    6,      2,     'accelTime',   'high',  6*0.8,
+    7,      2,     'accelTime',   'low',   6*1.2
+)
+
+cases
+
+# Define scenarios
+n <- 7 # baseline + high & low for each attribute
+scenarios_atts <- repDf(alts, n) 
+scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
+
+# Replace scenarios with case values 
+scenarios_atts <- scenarios_atts %>% 
+    left_join(cases) %>% 
+    mutate(
+        attribute = ifelse(is.na(attribute), "other", attribute),
+        case = ifelse(is.na(case), "base", case),
+        price = ifelse(attribute == 'price', value, price),
+        fuelEconomy = ifelse(attribute == 'fuelEconomy', value, fuelEconomy),
+        accelTime = ifelse(attribute == 'accelTime', value, accelTime)
+    )
+
+scenarios_atts
+
+# For each case, simulate the market share predictions
+sens_atts <- predictProbs(
+    model = mnl_linear,
+    alts = scenarios_atts, 
+    altID = 'altID',
+    obsID = 'obsID', 
+    ci = 0.95) %>% 
+    # Add scenario attributes to predictions
+    left_join(scenarios_atts) %>% 
+    filter(altID == 2) %>% # Keep only EV alternative
+    # Keep only attributes and predictions
+    select(attribute, case, value, prob_mean)
+
+sens_atts
+
+# -----------------------------------------------------------------------------
+# Save simulations
+
+save(
+    sens_price,
+    sens_atts,
+    file = here("sims", "sens_price_mnl_linear.RData")
+)

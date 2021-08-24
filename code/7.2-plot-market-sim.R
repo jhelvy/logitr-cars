@@ -3,9 +3,8 @@
 # Load libraries & functions
 library(tidyverse)
 library(here)
-library(logitr)
 
-# Load estimated models
+# Load simulation results
 load(here("sims", "mnl_linear.RData"))
 
 # Bar plot of probabilities for single market simulation (with 95% CI) 
@@ -39,5 +38,5 @@ sim_mnl_linear_multi %>%
 # Save plot
 ggsave(
     filename = here('figs', 'sim_multi.png'), 
-    width = 8, height = 8
+    width = 8, height = 7
 )
