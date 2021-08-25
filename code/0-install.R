@@ -13,7 +13,7 @@ install.packages(c(
     "remotes",
     "rmarkdown",
     "tidyverse",
-    "viridis",
+    "viridis"
 ))
 
 # Install development packages from GitHub
