@@ -17,6 +17,6 @@ install.packages(c(
 ))
 
 # Install development packages from GitHub
-remotes::install_github("jhelvy/jph")
+remotes::install_github("emse-madd-gwu/maddTools")
 remotes::install_github("jhelvy/logitr")
 remotes::install_github("jhelvy/conjointTools")
