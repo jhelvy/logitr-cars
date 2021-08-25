@@ -20,7 +20,7 @@ doe <- recodeDesign(doe, levels)
 # Make a survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
-    nResp     = 100, # Total number of respondents (upper bound)
+    nResp     = 500, # Total number of respondents (upper bound)
     nAltsPerQ = 3,    # Number of alternatives per question
     nQPerResp = 8     # Number of questions per respondent
 )
@@ -28,7 +28,7 @@ survey <- makeSurvey(
 # Make a survey with outside good
 survey_og <- makeSurvey(
     doe       = doe,  
-    nResp     = 100, 
+    nResp     = 500, 
     nAltsPerQ = 3,  
     nQPerResp = 8,
     outsideGood = TRUE

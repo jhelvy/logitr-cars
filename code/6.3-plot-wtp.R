@@ -5,6 +5,7 @@ library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
+library(maddTools)
 
 # -----------------------------------------------------------------------------
 # Get WTP estimates with 95% CI
@@ -15,7 +16,7 @@ coefs <- coef(mnl_linear)
 covariance <- vcov(mnl_linear)
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
-wtp_ci1 <- getCI(wtp_draws)
+wtp_ci1 <- ci(wtp_draws)
 wtp_ci1
 
 # Method 2: Estimate WTP in WTP space model:
@@ -23,7 +24,7 @@ load(here("models", "mnl_wtp.RData")) # Load estimated models
 coefs <- coef(mnl_wtp)
 covariance <- vcov(mnl_wtp)
 wtp_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
-wtp_ci2 <- getCI(wtp_draws)
+wtp_ci2 <- ci(wtp_draws)
 wtp_ci2 <- wtp_ci2[-1,] # Drop lambda (we won't plot this)
 wtp_ci2
 
@@ -105,4 +106,34 @@ ggsave(
   filename = here('figs', 'mnl_wtp.png'), 
   plot = plot_mnl_wtp, 
   width = 8, height = 2.3
+)
+
+# -----------------------------------------------------------------------------
+# Compare WTP for changes in all attributes 
+
+# WTP for:
+# 10 mpg improvement in fuel economy 
+# 3 sec improvement in acceleration time 
+# Gasoline vs Electric powertrain
+
+df_compare <- wtp_ci
+cols <- c('mean', 'lower', 'upper')
+df_compare[1, cols] <- df_compare[1, cols]*10 # Fuel Economy
+df_compare[2, cols] <- df_compare[2, cols]*-3  # Acceleration Time
+df_compare$label <- c(
+  "Fuel Economy:\n+10 mpg", "Accel. Time:\n-3 sec", "Powertrain:\nGasoline vs. Electric"
+)
+
+barplot_mnl_wtp <- df_compare %>% 
+    ggplot(aes(x = mean, y = label, xmin = lower, xmax = upper)) +
+    geom_col(width = 0.5, fill = 'gray') +
+    geom_errorbar(width = 0.3) +
+    labs(x = 'WTP ($1,000)', y = 'Attriubte') +
+    theme_bw()
+
+# Save plots 
+ggsave(
+  filename = here('figs', 'mnl_wtp_barplot.png'), 
+  plot = barplot_mnl_wtp, 
+  width = 5, height = 3
 )

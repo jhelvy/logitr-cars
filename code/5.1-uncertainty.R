@@ -4,8 +4,7 @@
 library(tidyverse)
 library(here)
 library(logitr)
-library(MASS)
-source(here("code", "0-functions.R"))
+library(maddTools)
 
 # -----------------------------------------------------------------------------
 # Compute 95% confidence interval using simulation
@@ -21,7 +20,7 @@ covariance <- vcov(mnl_linear)
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 
 # For each coefficient, get the mean and 95% confidence interval:
-coef_ci <- getCI(coef_draws, ci = 0.95)
+coef_ci <- ci(coef_draws, ci = 0.95)
 coef_ci
 
 # -----------------------------------------------------------------------------
@@ -129,7 +128,7 @@ ggsave(
 coefs <- coef(mnl_dummy)
 covariance <- vcov(mnl_dummy)
 draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
-coef_ci <- getCI(draws, ci = 0.95)
+coef_ci <- ci(draws, ci = 0.95)
 coef_ci
 
 # Separate coefficient CIs by attribute 

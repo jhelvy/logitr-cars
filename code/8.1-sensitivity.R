@@ -5,7 +5,7 @@
 library(tidyverse)
 library(here)
 library(logitr)
-library(jph)
+library(maddTools)
 
 # Load estimated models
 load(here("models", "mnl.RData"))
@@ -34,7 +34,7 @@ alts
 
 prices <- seq(10, 30) # Define sensitivity price levels
 n <- length(prices) # Number of simulations (20)
-scenarios_price <- repDf(alts, n) # Repeat the alts data frame n times
+scenarios_price <- rep_df(alts, n) # Repeat the alts data frame n times
 scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Set the price for each scenario
@@ -80,7 +80,7 @@ cases
 
 # Define scenarios
 n <- 7 # baseline + high & low for each attribute
-scenarios_atts <- repDf(alts, n) 
+scenarios_atts <- rep_df(alts, n) 
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Replace scenarios with case values 

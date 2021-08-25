@@ -35,10 +35,6 @@ data %>%
     count(respID, altID) %>% 
     filter(n == 8)
 
-# Check respondent 174:
-data %>% 
-    filter(respID == 174)
-
 # Visualize how many times each price level was chosen:
 data %>% count(price, choice)
 data %>%

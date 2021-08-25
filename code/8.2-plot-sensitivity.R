@@ -3,7 +3,7 @@
 # Load libraries & functions
 library(tidyverse)
 library(here)
-library(jph)
+library(maddTools)
 
 # Load simulation results
 load(here("sims", "sens_price_mnl_linear.RData"))
@@ -77,24 +77,23 @@ tornado_data <- sens_atts %>%
         'Fuel Economy (mpg)'         = 'fuelEconomy',
         '0-60 mph Acceleration Time' = 'accelTime'))
 
-tornado_plot <- ggtornado(
+tornado_base <- ggtornado(
     data = tornado_data,
     baseline = sens_atts$prob_mean[1], 
     var = 'attribute', 
     level = 'case',
     value = 'value', 
-    result = 'prob_mean', 
-    xlab = 'Market Share',
-    ylab = 'Attribute'
+    result = 'prob_mean'
 ) 
 
-# Change the fill colors
-tornado_plot_color <- tornado_plot +
-    scale_fill_manual(values = c("#67a9cf", "#ef8a62")) 
+# Change the fill colors, adjust labels
+tornado_plot <- tornado_base +
+    scale_fill_manual(values = c("#67a9cf", "#ef8a62")) + 
+    labs(x = 'Market Share', y = 'Attribute')
 
 # Save plot
 ggsave(
     filename = here('figs', 'tornado_plot.png'), 
-    plot = tornado_plot_color,
+    plot = tornado_plot,
     width = 5, height = 3
 )
