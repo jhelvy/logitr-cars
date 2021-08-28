@@ -1,4 +1,4 @@
-# Estimate multinomial logit (MNL) models
+# Estimate mixed logit (MXL) models
 
 # Load libraries
 library(logitr)
@@ -9,7 +9,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'mnl.csv'))
+data <- read_csv(here('data', 'mxl.csv'))
 head(data)
 
 # Variables:
@@ -24,7 +24,7 @@ head(data)
 # "powertrain"  = Indicates if the car is electric or gas
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model where all covariates are dummy-coded
+# Estimate MXL model where all covariates are dummy-coded
 
 # Create dummy coded variables
 data_dummy <- dummy_cols(
@@ -32,7 +32,7 @@ data_dummy <- dummy_cols(
 head(data_dummy)
 
 # Estimate the model
-mnl_dummy <- logitr(
+mxl_dummy <- logitr(
     data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
@@ -41,24 +41,25 @@ mnl_dummy <- logitr(
         "price_20", "price_25", 
         "fuelEconomy_25", "fuelEconomy_30", 
         "accelTime_7", "accelTime_8",
-        "powertrain_Gasoline")
+        "powertrain_Gasoline"),
+    randPars = c()
 )
 
 # View summary of results
-summary(mnl_dummy)
+summary(mxl_dummy)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_dummy$gradient
+mxl_dummy$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_dummy$hessian)$values
+eigen(mxl_dummy$hessian)$values
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model with linear price, fuelEconomy, and accelTime
+# Estimate MXL model with linear price, fuelEconomy, and accelTime
 
 # Estimate the model
-mnl_linear <- logitr(
+mxl_linear <- logitr(
     data   = data,
     choice = "choice",
     obsID  = "obsID",
@@ -66,20 +67,20 @@ mnl_linear <- logitr(
 )
 
 # View summary of results
-summary(mnl_linear)
+summary(mxl_linear)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_linear$gradient
+mxl_linear$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_linear$hessian)$values
+eigen(mxl_linear$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Save model objects 
 
 save(
-    mnl_dummy,
-    mnl_linear,
-    file = here("models", "mnl.RData")
+    mxl_dummy,
+    mxl_linear,
+    file = here("models", "mxl.RData")
 )
