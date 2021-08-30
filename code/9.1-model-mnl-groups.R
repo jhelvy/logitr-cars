@@ -10,7 +10,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'data_mnl_2groups.csv'))
+data <- read_csv(here('data', 'mnl_2groups.csv'))
 head(data)
 
 # Variables:
@@ -28,16 +28,30 @@ head(data)
 # -----------------------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
+# Create dummy coefficients for the group and powertrain variables
+data_dummy <- fastDummies::dummy_cols(data, c('powertrain', 'group'))
+head(data_dummy)
+
+# Create interactions of each variable with group_B
+data_dummy <- data_dummy %>%
+    mutate(
+        price_B       = price*group_B,
+        fuelEconomy_B = fuelEconomy*group_B,
+        accelTime_B   = accelTime*group_B,
+        powertrain_Gasoline_B = powertrain_Gasoline*group_B
+    )
+head(data_dummy)
+
 # Estimate the model
 mnl_groups <- logitr(
-    data   = data,
+    data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
     pars   = c(
-        'price', 'fuelEconomy', 'accelTime', 'powertrain',
+        'price', 'fuelEconomy', 'accelTime', 'powertrain_Gasoline',
         # Introduce group interactions with all main effects
-        'price*group', 'fuelEconomy*group', 'accelTime*group',
-        'powertrain*group'
+        'price_B', 'fuelEconomy_B', 'accelTime_B',
+        'powertrain_Gasoline_B'
     )
 )
 
@@ -61,34 +75,34 @@ save(
 # Generate draws of the model coefficients for each group
 
 # Get the model coefficients and covariance matrix
-coefs <- coef(mnl_linear)
-covariance <- vcov(mnl_linear)
+coefs <- coef(mnl_groups)
+covariance <- vcov(mnl_groups)
 
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 coef_draws_A <- coef_draws %>%
-    select(price, fuelEconomy, accelTime, powertrain_elec)
+    select(price, fuelEconomy, accelTime, powertrain_Gasoline)
 coef_draws_B <- coef_draws %>%
     mutate(
-        price           = price + price_B,
-        fuelEconomy     = fuelEconomy + fuelEconomy_B,
-        accelTime       = accelTime + accelTime_B,
-        powertrain_elec = powertrain_elec + powertrain_elec_B) %>%
-    select(price, fuelEconomy, accelTime, powertrain_elec)
+        price       = price + price_B,
+        fuelEconomy = fuelEconomy + fuelEconomy_B,
+        accelTime   = accelTime + accelTime_B,
+        powertrain_Gasoline = powertrain_Gasoline + powertrain_Gasoline_B) %>%
+    select(price, fuelEconomy, accelTime, powertrain_Gasoline)
 
 # -----------------------------------------------------------------------------
 # Compute WTP for each group
 
-wtp_A = draws_A / (-1* draws_A$price)
-wtp_B = draws_B / (-1* draws_B$price)
-getCI(wtp_A)
-getCI(wtp_B)
+wtp_A <- coef_draws_A / (-1* coef_draws_A$price)
+wtp_B <- coef_draws_B / (-1* coef_draws_B$price)
+ci(wtp_A)
+ci(wtp_B)
 
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market for each group
 
 # Define a market:
-market = data.frame(
+market <- data.frame(
     price           = c(15, 30, 21),
     fuelEconomy     = c(20, 90, 40),
     accelTime       = c(8, 6, 7),

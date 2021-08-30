@@ -1,6 +1,7 @@
 # Make conjoint surveys and simulate choice data using {conjointTools}
 
 # Load libraries
+library(tidyverse)
 library(conjointTools)
 library(readr)
 library(here)
@@ -17,20 +18,25 @@ levels <- list(
 doe <- makeDoe(levels)
 doe <- recodeDesign(doe, levels)
 
+# Set data metrics 
+nResp     <- 500 # Total number of respondents (upper bound)
+nAltsPerQ <- 3   # Number of alternatives per question
+nQPerResp <- 8   # Number of questions per respondent
+
 # Make a survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
-    nResp     = 500, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 8     # Number of questions per respondent
+    nResp     = nResp,
+    nAltsPerQ = nAltsPerQ,    
+    nQPerResp = nQPerResp  
 )
 
 # Make a survey with outside good
 survey_og <- makeSurvey(
     doe       = doe,  
-    nResp     = 500, 
-    nAltsPerQ = 3,  
-    nQPerResp = 8,
+    nResp     = nResp,
+    nAltsPerQ = nAltsPerQ,    
+    nQPerResp = nQPerResp,
     outsideGood = TRUE
 )
 
@@ -48,7 +54,7 @@ data_mnl1 <- simulateChoices(
 
 # Choices using a different utility model
 data_mnl2 <- simulateChoices(
-    survey    = survey,
+    survey = survey,
     altID  = "altID",
     obsID  = "obsID",
     pars = list(
@@ -83,11 +89,15 @@ data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
 data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
 data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
 
-# Create "2groups" data by combining data_mnl1 and data_mnl2
-data_mnl2$group <- 'B' 
-temp <- data_mnl1
-temp$group <- 'A'
-data_mnl_2groups <- rbind(temp, data_mnl2)
+# Create "2groups" data by combining half of data_mnl1 and data_mnl2
+data_mnl2 <- data_mnl2 %>% 
+  filter(respID <= nResp / 2) %>% 
+  mutate(group = 'A')
+temp <- data_mnl1 %>% 
+  filter(respID > nResp / 2) %>% 
+  mutate(group = 'B')
+data_mnl_2groups <- rbind(data_mnl2, temp)
+data_mnl_2groups$obsID <- rep(seq(nResp*nQPerResp), each = nAltsPerQ)
 
 # Save data
 write_csv(data_mnl1, here('data', 'mnl.csv'))
