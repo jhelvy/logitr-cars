@@ -101,79 +101,25 @@ ci(wtp_B)
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market for each group
 
-# Define a market:
-market <- data.frame(
-    price           = c(15, 30, 21),
-    fuelEconomy     = c(20, 90, 40),
-    accelTime       = c(8, 6, 7),
-    powertrain_elec = c(0, 1, 0))
+# Create a set of alternatives for which to simulate shares
+alts <- data.frame(
+    altID       = c(1, 2, 3), 
+    obsID       = c(1, 1, 1),
+    price       = c(15, 25, 21),
+    fuelEconomy = c(20, 100, 40),
+    accelTime   = c(8, 6, 7),
+    powertrain_Gasoline = c(1, 0, 1))
 
-# Use the logitProbsDraws() function to compute the market shares
-# with uncertainty for each group
-sharesUnc_A = logitProbsDraws(draws_A, market)
-sharesUnc_B = logitProbsDraws(draws_B, market)
-sharesUnc_A
-sharesUnc_B
+# Columns are attributes, rows are alternatives
+alts 
 
-# -----------------------------------------------------------------------------
-# Sensitivity of market share to changes in price with uncertainty
-# for each group
+# Use the logitProbs() function (from {maddTools}) to compute the probabilities
+sim_A <- logitProbs(
+    coefs = coef_draws_A,
+    alts = alts, altID = 'altID', obsID = 'obsID', ci = 0.95)
+sim_B <- logitProbs(
+    coefs = coef_draws_B,
+    alts = alts, altID = 'altID', obsID = 'obsID', ci = 0.95)
 
-# Define a baseline market:
-marketBaseline = data.frame(
-    price           = c(15, 30, 21),
-    fuelEconomy     = c(20, 90, 40),
-    accelTime       = c(8, 6, 7),
-    powertrain_elec = c(0, 1, 0))
-
-# Define the sensitivity cases:
-cases_price_unc_A = data.frame(
-    price      = seq(10, 20),
-    share_mean = NA,
-    share_low  = NA,
-    share_high = NA)
-cases_price_unc_B = cases_price_unc_A
-
-# Run the simulation for each case
-for (i in 1:nrow(cases_price_unc_A)) {
-    market = marketBaseline
-    market$price[1] = cases_price_unc_A$price[i]
-    sharesUnc_A = logitProbsDraws(draws_A, market)
-    sharesUnc_B = logitProbsDraws(draws_B, market)
-    cases_price_unc_A[i,2:4] = sharesUnc_A[1,]
-    cases_price_unc_B[i,2:4] = sharesUnc_B[1,]
-}
-cases_price_unc_A
-cases_price_unc_B
-
-# Plot price sensitivity results for each group
-cases_price_unc_A$group = 'A'
-cases_price_unc_B$group = 'B'
-cases_price_unc = bind_rows(cases_price_unc_A, cases_price_unc_B)
-share_price_plot = ggplot(cases_price_unc,
-    aes(x=price, y=share_mean, ymin=share_low, ymax=share_high)) +
-    geom_line(aes(color = group)) +
-    geom_ribbon(aes(fill=group), alpha=0.2) +
-    scale_x_continuous(breaks=seq(10, 20, 2)) +
-    scale_y_continuous(limits=c(0, 1)) +
-    labs(x='Price ($1,000)', y='Market Share') +
-    theme_bw()
-share_price_plot
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+sim_A
+sim_B
