@@ -64,9 +64,22 @@ data_mnl2 <- simulateChoices(
         electric    = -1.0)
 )
 
+# Simulate choices based on a MXL utility model
+data_mxl <- simulateChoices(
+  survey = survey,
+  altID  = "altID",
+  obsID  = "obsID",
+  pars = list(
+    price       = -0.7,
+    fuelEconomy = randN(0.1, 1),
+    accelTime   = randN(-0.2, 2),
+    electric    = randN(-4, 5))
+)
+
 # Recode powertrain variable using a character
 data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'Electric', 'Gasoline')
 data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'Electric', 'Gasoline')
+data_mxl$powertrain <- ifelse(data_mxl$elec == 1, 'Electric', 'Gasoline')
 
 # Choices for outside good model
 data_og <- simulateChoices(
@@ -87,6 +100,7 @@ varNames <- c(
     'accelTime')
 data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
 data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
+data_mxl <- data_mxl[c(varNames, 'powertrain')]
 data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
 
 # Create "2groups" data by combining half of data_mnl1 and data_mnl2
@@ -101,5 +115,6 @@ data_mnl_2groups$obsID <- rep(seq(nResp*nQPerResp), each = nAltsPerQ)
 
 # Save data
 write_csv(data_mnl1, here('data', 'mnl.csv'))
+write_csv(data_mxl, here('data', 'mxl.csv'))
 write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
 write_csv(data_og, here('data', 'og.csv'))

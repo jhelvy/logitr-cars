@@ -3,7 +3,6 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(fastDummies)
 library(here)
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -24,38 +23,6 @@ head(data)
 # "powertrain"  = Indicates if the car is electric or gas
 
 # -----------------------------------------------------------------------------
-# Estimate MXL model where all covariates are dummy-coded
-
-# Create dummy coded variables
-data_dummy <- dummy_cols(
-    data, c('price', 'fuelEconomy', 'accelTime', 'powertrain'))
-head(data_dummy)
-
-# Estimate the model
-mxl_dummy <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c(
-        # Remember one level must be "dummied out"
-        "price_20", "price_25", 
-        "fuelEconomy_25", "fuelEconomy_30", 
-        "accelTime_7", "accelTime_8",
-        "powertrain_Gasoline"),
-    randPars = c()
-)
-
-# View summary of results
-summary(mxl_dummy)
-
-# Check the 1st order condition: Is the gradient at the solution zero?
-mxl_dummy$gradient
-
-# 2nd order condition: Is the hessian negative definite?
-# (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mxl_dummy$hessian)$values
-
-# -----------------------------------------------------------------------------
 # Estimate MXL model with linear price, fuelEconomy, and accelTime
 
 # Estimate the model
@@ -63,7 +30,8 @@ mxl_linear <- logitr(
     data   = data,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain'),
+    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain = 'n')
 )
 
 # View summary of results
@@ -80,7 +48,6 @@ eigen(mxl_linear$hessian)$values
 # Save model objects 
 
 save(
-    mxl_dummy,
     mxl_linear,
     file = here("models", "mxl.RData")
 )
