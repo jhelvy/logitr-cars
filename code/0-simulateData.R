@@ -6,6 +6,8 @@ library(conjointTools)
 library(readr)
 library(here)
 
+# Make basic surveys ----
+
 # Define the attributes and levels
 levels <- list(
   price       = c(15, 20, 25), # Price ($1,000)
@@ -39,6 +41,34 @@ survey_og <- makeSurvey(
     nQPerResp = nQPerResp,
     outsideGood = TRUE
 )
+
+# Make attribute-specific survey ----
+
+# Define the attributes and levels
+levels_attspec <- list(
+  price       = c(15, 20, 25),   # Price ($1,000)
+  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
+  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
+  powertrain  = c("Gasoline", "Electric"), 
+  range       = c(100, 150, 200, 250) # EV driving range
+)
+
+# Make a full-factorial design of experiment
+doe_attspec <- makeDoe(levels_attspec)
+doe_attspec <- recodeDesign(doe_attspec, levels_attspec) %>% 
+  dummy_cols("powertrain") %>% 
+  mutate(range = range*powertrain_Electric) %>% 
+  distinct()
+
+# Make a basic survey
+survey_attspec <- makeSurvey(
+    doe       = doe_attspec,  
+    nResp     = 1000, 
+    nAltsPerQ = 3,  
+    nQPerResp = 8   
+)
+
+# Simulate choices ----
 
 # Simulate choices based on a utility model
 data_mnl1 <- simulateChoices(
@@ -76,6 +106,19 @@ data_mxl <- simulateChoices(
     electric    = randN(-4, 5))
 )
 
+# Simulate choices based on a utility model
+data_mnl_attspec <- simulateChoices(
+    survey = survey_attspec,
+    altID  = "altID",
+    obsID  = "obsID",
+    pars = list(
+        price       = -0.7,
+        fuelEconomy = 0.1,
+        accelTime   = -0.2,
+        range = 1,
+        powertrain_Electric = -4.0)
+)
+
 # Recode powertrain variable using a character
 data_mnl1$powertrain <- ifelse(data_mnl1$elec == 1, 'Electric', 'Gasoline')
 data_mnl2$powertrain <- ifelse(data_mnl2$elec == 1, 'Electric', 'Gasoline')
@@ -102,6 +145,7 @@ data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
 data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
 data_mxl <- data_mxl[c(varNames, 'powertrain')]
 data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
+data_mnl_attspec <- data_mnl_attspec[c(varNames, 'range', 'powertrain_Electric')]
 
 # Create "2groups" data by combining half of data_mnl1 and data_mnl2
 data_mnl2 <- data_mnl2 %>% 
@@ -118,3 +162,4 @@ write_csv(data_mnl1, here('data', 'mnl.csv'))
 write_csv(data_mxl, here('data', 'mxl.csv'))
 write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
 write_csv(data_og, here('data', 'og.csv'))
+write_csv(data_mnl_attspec, here('data', 'mnl_attspec.csv'))
