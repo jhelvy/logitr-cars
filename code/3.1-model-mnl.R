@@ -41,7 +41,7 @@ mnl_dummy <- logitr(
         "price_20", "price_25", 
         "fuelEconomy_25", "fuelEconomy_30", 
         "accelTime_7", "accelTime_8",
-        "powertrain_Gasoline")
+        "powertrain_Electric")
 )
 
 # View summary of results
@@ -55,14 +55,14 @@ mnl_dummy$gradient
 eigen(mnl_dummy$hessian)$values
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model with linear price, fuelEconomy, and accelTime
+# Estimate MNL model with continuous (linear) price, fuelEconomy, and accelTime
 
 # Estimate the model
 mnl_linear <- logitr(
-    data   = data,
+    data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain')
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
 )
 
 # View summary of results

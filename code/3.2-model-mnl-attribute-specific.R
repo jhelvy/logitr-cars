@@ -26,10 +26,11 @@ head(data)
 # "powertrain_Electric" = Indicates if the car is electric or gas (1, 0)
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model with linear price, fuelEconomy, accelTime, and range
+# Estimate MNL model with continuous (linear) price, fuelEconomy, accelTime, 
+# and range
 
 # Estimate the model
-mnl_linear <- logitr(
+mnl_attspec <- logitr(
     data   = data,
     choice = "choice",
     obsID  = "obsID",
@@ -38,18 +39,18 @@ mnl_linear <- logitr(
 )
 
 # View summary of results
-summary(mnl_linear)
+summary(mnl_attspec)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_linear$gradient
+mnl_attspec$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_linear$hessian)$values
+eigen(mnl_attspec$hessian)$values
 
 # What is the utililty of each EV range (100, 150, 200, 250)? 
-ev100 <- coef(mnl_linear)['powertrain_Electric']
-range <- coef(mnl_linear)['range']
+ev100 <- coef(mnl_attspec)['powertrain_Electric']
+range <- coef(mnl_attspec)['range']
 ev150 <- ev100 + range*50
 ev200 <- ev100 + range*100
 ev250 <- ev100 + range*150
@@ -58,3 +59,12 @@ ev100
 ev150
 ev200
 ev250
+
+# -----------------------------------------------------------------------------
+# Save model object
+
+save(
+    mnl_attspec,
+    file = here("models", "mnl_attspec.RData")
+)
+

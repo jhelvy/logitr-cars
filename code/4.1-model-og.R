@@ -20,7 +20,7 @@ head(data_og)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "electric"    = Indicates if the car is electric or gas
+# "powertrain_Electric" = Indicates if the car is electric or gas (1, 0)
 # "outsideGood" = Indicates the outside good alternative
 
 # -----------------------------------------------------------------------------
@@ -31,7 +31,9 @@ mnl_og <- logitr(
     data   = data_og,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'electric', 'outsideGood')
+    pars = c(
+        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 
+        'outsideGood')
 )
 
 # View summary of results

@@ -132,7 +132,8 @@ data_og <- simulateChoices(
         accelTime   = -0.2,
         electric    = -4.0, 
         outsideGood = -15.0)
-)
+) %>% 
+  rename(powertrain_Electric = electric)
 
 # Rearrange column names
 varNames <- c(
@@ -141,7 +142,7 @@ varNames <- c(
 data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
 data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
 data_mxl <- data_mxl[c(varNames, 'powertrain')]
-data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
+data_og <- data_og[c(varNames, 'powertrain_Electric', 'outsideGood')]
 data_mnl_attspec <- data_mnl_attspec[c(varNames, 'powertrain_Electric', 'range')]
 
 # Create "2groups" data by combining half of data_mnl1 and data_mnl2
