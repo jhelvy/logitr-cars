@@ -45,20 +45,17 @@ survey_og <- makeSurvey(
 # Make attribute-specific survey ----
 
 # Define the attributes and levels
-levels_attspec <- list(
-  price       = c(15, 20, 25),   # Price ($1,000)
-  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
-  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
-  powertrain  = c("Gasoline", "Electric"), 
-  range       = c(100, 150, 200, 250) # EV driving range
-)
+levels_attspec <- levels
+levels_attspec$range <- c(100, 150, 200, 250)
 
 # Make a full-factorial design of experiment
 doe_attspec <- makeDoe(levels_attspec)
 doe_attspec <- recodeDesign(doe_attspec, levels_attspec) %>% 
-  dummy_cols("powertrain") %>% 
-  mutate(range = range*powertrain_Electric) %>% 
-  distinct()
+  mutate(
+    range = range - min(range),
+    range = ifelse(electric != 1, 0, range)) %>% 
+    distinct() %>% 
+  rename(powertrain_Electric = electric)
 
 # Make a basic survey
 survey_attspec <- makeSurvey(
@@ -115,8 +112,8 @@ data_mnl_attspec <- simulateChoices(
         price       = -0.7,
         fuelEconomy = 0.1,
         accelTime   = -0.2,
-        range = 1,
-        powertrain_Electric = -4.0)
+        powertrain_Electric = -4.0, 
+        range = 0.05)
 )
 
 # Recode powertrain variable using a character
@@ -145,7 +142,7 @@ data_mnl1 <- data_mnl1[c(varNames, 'powertrain')]
 data_mnl2 <- data_mnl2[c(varNames, 'powertrain')]
 data_mxl <- data_mxl[c(varNames, 'powertrain')]
 data_og <- data_og[c(varNames, 'electric', 'outsideGood')]
-data_mnl_attspec <- data_mnl_attspec[c(varNames, 'range', 'powertrain_Electric')]
+data_mnl_attspec <- data_mnl_attspec[c(varNames, 'powertrain_Electric', 'range')]
 
 # Create "2groups" data by combining half of data_mnl1 and data_mnl2
 data_mnl2 <- data_mnl2 %>% 

@@ -22,18 +22,16 @@ head(doe) # preview
 doe <- recodeDesign(doe, levels)
 head(doe) # preview
 
-# The "range" attribute only applies to the case where
-# powertrain == "Electric"
-# To account for this, we'll first need to create "dummy-coded"
-# variables for each type of powertrain
-doe <- dummy_cols(doe, "powertrain")
-head(doe) # preview
-
-# Now we only want range to have a non-zero value when
-# powertrain_Electric == 1
-# So we can just multiple range by the powertrain_Electric variable
-doe <- doe %>%
-  mutate(range = range*powertrain_Electric)
+# The "range" attribute only applies to the case when powertrain == "Electric"
+# To account for this, we have to do two things: 
+# 1) we need the range to be 0 when powertrain != "Electric"
+# 2) we need to subtract away the minimum range level such that the value of 
+#    "0" reflects a reference level of 100 miles. Then the value for "range" 
+#    would mean the *additional* range beyond 100 miles. 
+doe <- doe %>% 
+  mutate(
+    range = range - min(range),
+    range = ifelse(powertrain != "Electric", 0, range))
 head(doe) # preview
 
 # Finally, remove non-unique rows
@@ -51,4 +49,4 @@ head(survey) # preview
 
 # Check that range is always 0 when powertrain_Gasoline == 1 
 survey %>% 
-  count(range, powertrain_Electric, powertrain_Gasoline)
+  count(range, powertrain)
