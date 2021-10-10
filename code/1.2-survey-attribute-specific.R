@@ -22,6 +22,24 @@ head(doe) # preview
 doe <- recodeDesign(doe, levels)
 head(doe) # preview
 
+# The "range" attribute only applies to the case where
+# powertrain == "Electric"
+# To account for this, we'll first need to create "dummy-coded"
+# variables for each type of powertrain
+doe <- dummy_cols(doe, "powertrain")
+head(doe) # preview
+
+# Now we only want range to have a non-zero value when
+# powertrain_Electric == 1
+# So we can just multiple range by the powertrain_Electric variable
+doe <- doe %>%
+  mutate(range = range*powertrain_Electric)
+head(doe) # preview
+
+# Finally, remove non-unique rows
+doe <- distinct(doe)
+head(doe) # preview
+
 # Make a basic survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
@@ -31,19 +49,6 @@ survey <- makeSurvey(
 )
 head(survey) # preview
 
-# The "range" attribute only applies to the case where
-# powertrain == "Electric"
-# To account for this, we'll first need to create "dummy-coded"
-# variables for each type of powertrain
-survey <- dummy_cols(survey, "powertrain")
-head(survey) # preview
-
-# Now we only want range to have a non-zero value when
-# powertrain_Electric == 1
-# So we can just multiple range by the powertrain_Electric variable
-survey <- survey %>%
-  mutate(range = range*powertrain_Electric)
-head(survey) # preview
-
-# Keep in mind now that when you run your model, you'll need to choose
-# one level for "powertrain" as the reference level
+# Check that range is always 0 when powertrain_Gasoline == 1 
+survey %>% 
+  count(range, powertrain_Electric, powertrain_Gasoline)
