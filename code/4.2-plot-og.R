@@ -27,8 +27,8 @@ df_fuelEconomy <- data.frame(level = c(20, 25, 30)) %>%
 df_accelTime <- data.frame(level = c(6, 7, 8)) %>% 
     mutate(utility = coefs['accelTime']*(level - min(level)))
     
-df_powertrain = data.frame(level = c("Electric", "Gasoline")) %>% 
-    mutate(utility = c(0, coefs['powertrainGasoline']))
+df_powertrain = data.frame(level = c("Gasoline", "Electric")) %>%
+    mutate(utility = c(0, coefs['powertrain_Electric']))
 
 df_og = data.frame(level = c("No", "Yes")) %>% 
     mutate(utility = c(0, coefs['outsideGood']))

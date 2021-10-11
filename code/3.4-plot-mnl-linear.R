@@ -46,8 +46,8 @@ df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
       diff    = level - min(level),
       utility = diff*coefs['accelTime'])
     
-df_powertrain = data.frame(level = c("Electric", "Gasoline")) %>% 
-    mutate(utility = c(coefs['powertrain_Electric'], 0))
+df_powertrain = data.frame(level = c("Gasoline", "Electric")) %>%
+    mutate(utility = c(0, coefs['powertrain_Electric']))
 
 # Get upper and lower bounds (plots should have the same y-axis)
 utility <- c(

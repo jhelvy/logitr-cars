@@ -38,7 +38,7 @@ data_dummy <- data_dummy %>%
         price_B       = price*group_B,
         fuelEconomy_B = fuelEconomy*group_B,
         accelTime_B   = accelTime*group_B,
-        powertrain_Gasoline_B = powertrain_Gasoline*group_B
+        powertrain_Electric_B = powertrain_Electric*group_B
     )
 head(data_dummy)
 
@@ -48,10 +48,10 @@ mnl_groups <- logitr(
     choice = "choice",
     obsID  = "obsID",
     pars   = c(
-        'price', 'fuelEconomy', 'accelTime', 'powertrain_Gasoline',
+        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric',
         # Introduce group interactions with all main effects
         'price_B', 'fuelEconomy_B', 'accelTime_B',
-        'powertrain_Gasoline_B'
+        'powertrain_Electric_B'
     )
 )
 
@@ -81,14 +81,14 @@ covariance <- vcov(mnl_groups)
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
 coef_draws_A <- coef_draws %>%
-    select(price, fuelEconomy, accelTime, powertrain_Gasoline)
+    select(price, fuelEconomy, accelTime, powertrain_Electric)
 coef_draws_B <- coef_draws %>%
     mutate(
         price       = price + price_B,
         fuelEconomy = fuelEconomy + fuelEconomy_B,
         accelTime   = accelTime + accelTime_B,
-        powertrain_Gasoline = powertrain_Gasoline + powertrain_Gasoline_B) %>%
-    select(price, fuelEconomy, accelTime, powertrain_Gasoline)
+        powertrain_Electric = powertrain_Electric + powertrain_Electric_B) %>%
+    select(price, fuelEconomy, accelTime, powertrain_Electric)
 
 # -----------------------------------------------------------------------------
 # Compute WTP for each group
@@ -108,7 +108,7 @@ alts <- data.frame(
     price       = c(15, 25, 21),
     fuelEconomy = c(20, 100, 40),
     accelTime   = c(8, 6, 7),
-    powertrain_Gasoline = c(1, 0, 1))
+    powertrain_Electric = c(0, 1, 0))
 
 # Columns are attributes, rows are alternatives
 alts 

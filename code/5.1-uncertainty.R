@@ -32,7 +32,7 @@ coef_ci$par <- row.names(coef_ci)
 coef_price <- coef_ci %>% filter(par == 'price')
 coef_fuelEconomy <- coef_ci %>% filter(par == 'fuelEconomy')
 coef_accelTime <- coef_ci %>% filter(par == 'accelTime')
-coef_powertrain <- coef_ci %>% filter(par == 'powertrainGasoline')
+coef_powertrain <- coef_ci %>% filter(par == 'powertrain_Electric')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
@@ -58,7 +58,7 @@ df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
         lower = diff*coef_accelTime$lower,
         upper = diff*coef_accelTime$upper)
     
-df_powertrain <- data.frame(level = c("Electric", "Gasoline")) %>%
+df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
     mutate(
         mean  = c(0, coef_powertrain$mean),
         lower = c(0, coef_powertrain$lower),
@@ -139,7 +139,7 @@ coef_fuelEconomy_25 <- coef_ci %>% filter(par == 'fuelEconomy_25')
 coef_fuelEconomy_30 <- coef_ci %>% filter(par == 'fuelEconomy_30')
 coef_accelTime_7 <- coef_ci %>% filter(par == 'accelTime_7')
 coef_accelTime_8 <- coef_ci %>% filter(par == 'accelTime_8')
-coef_powertrain <- coef_ci %>% filter(par == 'powertrain_Gasoline')
+coef_powertrain <- coef_ci %>% filter(par == 'powertrain_Electric')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
@@ -162,7 +162,7 @@ df_accelTime <- data.frame(
     lower = c(0, coef_accelTime_7$lower, coef_accelTime_8$lower),
     upper = c(0, coef_accelTime_7$upper, coef_accelTime_8$upper))
 
-df_powertrain <- data.frame(level = c("Electric", "Gasoline")) %>%
+df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
     mutate(
         mean  = c(0, coef_powertrain$mean),
         lower = c(0, coef_powertrain$lower),

@@ -24,7 +24,7 @@ alts <- data.frame(
     price       = c(15, 25, 21),
     fuelEconomy = c(20, 100, 40),
     accelTime   = c(8, 6, 7),
-    powertrain  = c("Gasoline", "Electric", "Gasoline"))
+    powertrain_Electric = c(0, 1, 0))
 
 alts 
 

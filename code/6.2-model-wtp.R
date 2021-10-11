@@ -10,12 +10,16 @@ options(dplyr.width = Inf) # So you can see all of the columns
 data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
+# Create dummy coded variable for powertrain
+data_dummy <- dummy_cols(data, 'powertrain')
+head(data_dummy)
+
 # Estimate the model
 mnl_wtp <- logitr(
-    data   = data,
+    data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('fuelEconomy', 'accelTime', 'powertrain'), 
+    pars   = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
     price = 'price', 
     modelSpace = 'wtp', 
     numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex

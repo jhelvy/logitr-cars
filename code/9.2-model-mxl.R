@@ -25,13 +25,17 @@ head(data)
 # -----------------------------------------------------------------------------
 # Estimate MXL model with linear price, fuelEconomy, and accelTime
 
+# Create dummy coefficients for powertrain
+data_dummy <- fastDummies::dummy_cols(data, 'powertrain')
+head(data_dummy)
+
 # Estimate the model
 mxl_linear <- logitr(
-    data   = data,
+    data   = data_dummy,
     choice = "choice",
     obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain'),
-    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain = 'n')
+    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric'),
+    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
 )
 
 # View summary of results
