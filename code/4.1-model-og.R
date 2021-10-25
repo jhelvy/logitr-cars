@@ -28,9 +28,9 @@ head(data_og)
 
 # Estimate the model
 mnl_og <- logitr(
-    data   = data_og,
-    choice = "choice",
-    obsID  = "obsID",
+    data    = data_og,
+    outcome = "choice",
+    obsID   = "obsID",
     pars = c(
         'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 
         'outsideGood')
