@@ -8,14 +8,9 @@ library(logitr)
 # Load estimated models
 load(here("models", "mnl.RData"))
 
-# Load data
-data <- read_csv(here('data', 'mnl.csv'))
-head(data)
-
 # -----------------------------------------------------------------------------
 # Single market simulation using the linear model
 
-head(data)
 summary(mnl_linear)
 
 # Create a set of alternatives for which to simulate shares

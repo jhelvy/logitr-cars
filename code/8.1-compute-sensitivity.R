@@ -10,15 +10,11 @@ library(maddTools)
 # Load estimated models
 load(here("models", "mnl.RData"))
 
-# Load data
-data <- read_csv(here('data', 'mnl.csv'))
-head(data)
-
 # -----------------------------------------------------------------------------
 # Sensitivity of market share to changes in *price*
 
 # Create a set of alternatives for which to simulate shares
-alts <- data.frame(
+data <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),
     price       = c(15, 25, 21),
@@ -26,7 +22,7 @@ alts <- data.frame(
     accelTime   = c(8, 6, 7),
     powertrain_Electric = c(0, 1, 0))
 
-alts 
+data 
 
 # Define the sensitivity cases
 # For this case, let's see how the market share for the Electric Vehicle 
@@ -34,7 +30,7 @@ alts
 
 prices <- seq(10, 30) # Define sensitivity price levels
 n <- length(prices) # Number of simulations (20)
-scenarios_price <- rep_df(alts, n) # Repeat the alts data frame n times
+scenarios_price <- rep_df(data, n) # Repeat the alts data frame n times
 scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Set the price for each scenario
@@ -43,16 +39,17 @@ scenarios_price$price[which(scenarios_price$altID == 2)] <- prices
 head(scenarios_price)
 
 # For each case, simulate the market share predictions
-sens_price <- predictProbs(
-    model = mnl_linear,
-    alts = scenarios_price, 
-    altID = 'altID',
+sens_price <- predict(
+    mnl_linear,
+    newdata = scenarios_price, 
     obsID = 'obsID', 
-    ci = 0.95) %>% 
+    ci = 0.95,
+    returnData = TRUE
+    ) %>% 
     # Add scenario attributes to predictions
     left_join(scenarios_price) %>% 
     filter(altID == 2) %>% # Keep only EV alternative
-    select(price, starts_with("prob_")) # Keep only prices and predictions
+    select(price, starts_with("predicted_")) # Keep only prices and predictions
 
 sens_price
 # The probability shifts from essentially 100% of the market share at 
@@ -80,7 +77,7 @@ cases
 
 # Define scenarios
 n <- 7 # baseline + high & low for each attribute
-scenarios_atts <- rep_df(alts, n) 
+scenarios_atts <- rep_df(data, n) 
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Replace scenarios with case values 
@@ -97,17 +94,18 @@ scenarios_atts <- scenarios_atts %>%
 scenarios_atts
 
 # For each case, simulate the market share predictions
-sens_atts <- predictProbs(
-    model = mnl_linear,
-    alts = scenarios_atts, 
-    altID = 'altID',
+sens_atts <- predict(
+    mnl_linear,
+    newdata = scenarios_atts, 
     obsID = 'obsID', 
-    ci = 0.95) %>% 
+    ci = 0.95, 
+    returnData = TRUE
+    ) %>% 
     # Add scenario attributes to predictions
     left_join(scenarios_atts) %>% 
     filter(altID == 2) %>% # Keep only EV alternative
     # Keep only attributes and predictions
-    select(attribute, case, value, prob_mean)
+    select(attribute, case, value, predicted_prob)
 
 sens_atts
 
