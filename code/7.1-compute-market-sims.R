@@ -8,18 +8,13 @@ library(logitr)
 # Load estimated models
 load(here("models", "mnl.RData"))
 
-# Load data
-data <- read_csv(here('data', 'mnl.csv'))
-head(data)
-
 # -----------------------------------------------------------------------------
 # Single market simulation using the linear model
 
-head(data)
 summary(mnl_linear)
 
 # Create a set of alternatives for which to simulate shares
-alts <- data.frame(
+data <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),
     price       = c(15, 25, 21),
@@ -28,15 +23,16 @@ alts <- data.frame(
     powertrain_Electric  = c(0, 1, 0))
 
 # Columns are attributes, rows are alternatives
-alts 
+data
 
-# Use the predictProbs() function to compute the probabilities
-sim_mnl_linear <- predictProbs(
-    model = mnl_linear,
-    alts = alts, 
-    altID = 'altID',
+# Use the predict() function to compute the probabilities
+sim_mnl_linear <- predict(
+    mnl_linear,
+    newdata = data, 
     obsID = 'obsID', 
-    ci = 0.95)
+    ci = 0.95, 
+    returnData = TRUE # This returns your data along with predicted values
+)
 
 sim_mnl_linear
 
@@ -47,13 +43,14 @@ sim_mnl_linear
 scenarios <- read_csv(here('data', 'scenarios.csv'))
 head(scenarios)
 
-# Use the predictProbs() function to compute the probabilities
-sim_mnl_linear_multi <- predictProbs(
-    model = mnl_linear,
-    alts = scenarios, 
-    altID = 'altID',
+# Use the predict() function to compute the probabilities
+sim_mnl_linear_multi <- predict(
+    mnl_linear,
+    newdata = scenarios, 
     obsID = 'obsID', 
-    ci = 0.95)
+    ci = 0.95,
+    returnData = TRUE
+)
 
 head(sim_mnl_linear_multi)
 

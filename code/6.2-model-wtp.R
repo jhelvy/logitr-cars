@@ -16,11 +16,11 @@ head(data_dummy)
 
 # Estimate the model
 mnl_wtp <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    price = 'price', 
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
+    price   = 'price', 
     modelSpace = 'wtp', 
     numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex
 )

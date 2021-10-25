@@ -44,10 +44,10 @@ head(data_dummy)
 
 # Estimate the model
 mnl_groups <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c(
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars = c(
         'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric',
         # Introduce group interactions with all main effects
         'price_B', 'fuelEconomy_B', 'accelTime_B',
@@ -102,7 +102,7 @@ ci(wtp_B)
 # Compute the market shares of a given market for each group
 
 # Create a set of alternatives for which to simulate shares
-alts <- data.frame(
+data <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),
     price       = c(15, 25, 21),
@@ -111,15 +111,22 @@ alts <- data.frame(
     powertrain_Electric = c(0, 1, 0))
 
 # Columns are attributes, rows are alternatives
-alts 
+data 
 
 # Use the logitProbs() function (from {maddTools}) to compute the probabilities
 sim_A <- logitProbs(
     coefs = coef_draws_A,
-    alts = alts, altID = 'altID', obsID = 'obsID', ci = 0.95)
+    newdata = data, 
+    obsID = 'obsID', 
+    ci = 0.95
+)
+
 sim_B <- logitProbs(
     coefs = coef_draws_B,
-    alts = alts, altID = 'altID', obsID = 'obsID', ci = 0.95)
+    newdata = data, 
+    obsID = 'obsID', 
+    ci = 0.95
+)
 
 sim_A
 sim_B

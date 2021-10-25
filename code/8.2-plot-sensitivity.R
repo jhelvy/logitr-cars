@@ -13,7 +13,9 @@ load(here("sims", "sens_price_mnl_linear.RData"))
 
 share_price_plot <- 
     sens_price %>% 
-    ggplot(aes(x = price, y = prob_mean, ymin = prob_low, ymax = prob_high)) +
+    ggplot(aes(
+        x = price, y = predicted_prob, 
+        ymin = predicted_prob_lower, ymax = predicted_prob_upper)) +
     geom_ribbon(alpha = 0.2) +
     # Use a dashed line for the full range of prices
     geom_line(linetype = "dashed") +
@@ -40,9 +42,9 @@ ggsave(
 marketSize <- 1000
 rev_data <- sens_price %>%
     mutate(
-        rev_mean = price*marketSize*prob_mean / 10^3, # Convert to millions
-        rev_low  = price*marketSize*prob_low / 10^3,
-        rev_high = price*marketSize*prob_high / 10^3)
+        rev_mean = price*marketSize*predicted_prob / 10^3, # Convert to millions
+        rev_low  = price*marketSize*predicted_prob_lower / 10^3,
+        rev_high = price*marketSize*predicted_prob_upper / 10^3)
 
 rev_price_plot <- rev_data %>% 
     ggplot(aes(x = price, y = rev_mean, ymin = rev_low, ymax = rev_high)) +
@@ -79,11 +81,11 @@ tornado_data <- sens_atts %>%
 
 tornado_base <- ggtornado(
     data = tornado_data,
-    baseline = sens_atts$prob_mean[1], 
+    baseline = sens_atts$predicted_prob[1], 
     var = 'attribute', 
     level = 'case',
     value = 'value', 
-    result = 'prob_mean'
+    result = 'predicted_prob'
 ) 
 
 # Change the fill colors, adjust labels

@@ -219,4 +219,5 @@ plot_mnl_dummy_unc <- plot_grid(
 ggsave(
     filename = here('figs', 'plot_mnl_dummy_unc.png'), 
     plot = plot_mnl_dummy_unc, 
-    width = 10, height = 2.3)
+    width = 10, height = 2.3
+)

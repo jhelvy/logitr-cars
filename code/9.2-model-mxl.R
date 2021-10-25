@@ -23,35 +23,60 @@ head(data)
 # "powertrain"  = Indicates if the car is electric or gas
 
 # -----------------------------------------------------------------------------
-# Estimate MXL model with linear price, fuelEconomy, and accelTime
+# Estimate preference space MXL model with linear price, fuelEconomy, and accelTime
 
 # Create dummy coefficients for powertrain
 data_dummy <- fastDummies::dummy_cols(data, 'powertrain')
 head(data_dummy)
 
 # Estimate the model
-mxl_linear <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric'),
+mxl_pref <- logitr(
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric'),
     randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
 )
 
 # View summary of results
-summary(mxl_linear)
+summary(mxl_pref)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mxl_linear$gradient
+mxl_pref$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mxl_linear$hessian)$values
+eigen(mxl_pref$hessian)$values
+
+# -----------------------------------------------------------------------------
+# Estimate WTP space MXL model with linear price, fuelEconomy, and accelTime
+
+# Estimate the model
+mxl_wtp <- logitr(
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
+    price   = 'price',
+    modelSpace = 'wtp',
+    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
+)
+
+# View summary of results
+summary(mxl_wtp)
+
+# Check the 1st order condition: Is the gradient at the solution zero?
+mxl_wtp$gradient
+
+# 2nd order condition: Is the hessian negative definite?
+# (If all the eigenvalues are negative, the hessian is negative definite)
+eigen(mxl_wtp$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Save model objects 
 
 save(
-    mxl_linear,
+    mxl_pref,
+    mxl_wtp,
     file = here("models", "mxl.RData")
 )
