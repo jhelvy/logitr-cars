@@ -70,7 +70,6 @@ survey_attspec <- makeSurvey(
 # Simulate choices based on a utility model
 data_mnl1 <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price       = -0.7,
@@ -82,7 +81,6 @@ data_mnl1 <- simulateChoices(
 # Choices using a different utility model
 data_mnl2 <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price       = -0.6,
@@ -94,7 +92,6 @@ data_mnl2 <- simulateChoices(
 # Simulate choices based on a MXL utility model
 data_mxl <- simulateChoices(
   survey = survey,
-  altID  = "altID",
   obsID  = "obsID",
   pars = list(
     price       = -0.7,
@@ -106,7 +103,6 @@ data_mxl <- simulateChoices(
 # Simulate choices based on a utility model
 data_mnl_attspec <- simulateChoices(
     survey = survey_attspec,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price       = -0.7,
@@ -123,8 +119,7 @@ data_mxl$powertrain <- ifelse(data_mxl$elec == 1, 'Electric', 'Gasoline')
 
 # Choices for outside good model
 data_og <- simulateChoices(
-    survey    = survey_og,
-    altID  = "altID",
+    survey = survey_og,
     obsID  = "obsID",
     pars = list(
         price       = -0.7,

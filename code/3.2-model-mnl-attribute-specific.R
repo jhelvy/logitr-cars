@@ -31,10 +31,10 @@ head(data)
 
 # Estimate the model
 mnl_attspec <- logitr(
-    data   = data,
-    choice = "choice",
-    obsID  = "obsID",
-    pars = c(
+    data    = data,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c(
         'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 'range')
 )
 

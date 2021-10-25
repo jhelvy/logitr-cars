@@ -33,10 +33,10 @@ head(data_dummy)
 
 # Estimate the model
 mnl_dummy <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c(
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c(
         # Remember one level must be "dummied out"
         "price_20", "price_25", 
         "fuelEconomy_25", "fuelEconomy_30", 
@@ -59,10 +59,10 @@ eigen(mnl_dummy$hessian)$values
 
 # Estimate the model
 mnl_linear <- logitr(
-    data   = data_dummy,
-    choice = "choice",
-    obsID  = "obsID",
-    pars   = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
+    data    = data_dummy,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars    = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
 )
 
 # View summary of results
