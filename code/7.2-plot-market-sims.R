@@ -10,7 +10,9 @@ load(here("sims", "mnl_linear.RData"))
 # Bar plot of probabilities for single market simulation (with 95% CI) 
 sim_mnl_linear %>% 
     mutate(label = c("Conventional", "Electric", "Hybrid")) %>% 
-    ggplot(aes(x = label, y = prob_mean, ymin = prob_low, ymax = prob_high)) +
+    ggplot(aes(
+        x = label, y = predicted_prob, 
+        ymin = predicted_prob_lower, ymax = predicted_prob_upper)) +
     geom_col(fill = "grey", width = 0.6) +
     geom_errorbar(width = 0.3) +
     scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
@@ -26,8 +28,8 @@ ggsave(
 # Bar plot of probabilities for multiple market simulations (with 95% CI) 
 sim_mnl_linear_multi %>%
     ggplot(aes(
-        x = as.factor(altID), y = prob_mean, 
-        ymin = prob_low, ymax = prob_high)) +
+        x = as.factor(altID), y = predicted_prob, 
+        ymin = predicted_prob_lower, ymax = predicted_prob_upper)) +
     geom_col(fill = "grey", width = 0.6) +
     geom_errorbar(width = 0.3) +
     facet_wrap(~obsID) +
