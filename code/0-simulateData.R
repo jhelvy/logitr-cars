@@ -18,7 +18,7 @@ levels <- list(
 
 # Make a full-factorial design of experiment, then recode the levels
 doe <- makeDoe(levels)
-doe <- recodeDesign(doe, levels)
+doe <- recodeDoe(doe, levels)
 
 # Set data metrics 
 nResp     <- 500 # Total number of respondents (upper bound)
@@ -50,7 +50,7 @@ levels_attspec$range <- c(100, 150, 200, 250)
 
 # Make a full-factorial design of experiment
 doe_attspec <- makeDoe(levels_attspec)
-doe_attspec <- recodeDesign(doe_attspec, levels_attspec) %>% 
+doe_attspec <- recodeDoe(doe_attspec, levels_attspec) %>%
   mutate(
     range = range - min(range),
     range = ifelse(electric != 1, 0, range)) %>% 
