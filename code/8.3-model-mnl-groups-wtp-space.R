@@ -27,75 +27,69 @@ head(data)
 # -----------------------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
-# Create dummy coefficients for the group and powertrain variables
-data_dummy <- fastDummies::dummy_cols(data, c('powertrain', 'group'))
-head(data_dummy)
+# Create dummy coefficients for powertrain variable
+data <- fastDummies::dummy_cols(data, 'powertrain')
 
-# Create interactions of each variable with group_B
-data_dummy <- data_dummy %>%
-    mutate(
-        price_B       = price*group_B,
-        fuelEconomy_B = fuelEconomy*group_B,
-        accelTime_B   = accelTime*group_B,
-        powertrain_Electric_B = powertrain_Electric*group_B
-    )
-head(data_dummy)
+# Split data into groups
+data_A <- data %>% filter(group == "A")
+data_B <- data %>% filter(group == "B")
 
-# Estimate the model
-mnl_groups <- logitr(
-    data    = data_dummy,
+# Estimate separate models for each group
+mnl_group_A <- logitr(
+    data    = data_A,
     outcome = "choice",
     obsID   = "obsID",
-    pars = c(
-        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric',
-        # Introduce group interactions with all main effects
-        'price_B', 'fuelEconomy_B', 'accelTime_B',
-        'powertrain_Electric_B'
-    )
+    pars = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
+)
+
+mnl_group_B <- logitr(
+    data    = data_B,
+    outcome = "choice",
+    obsID   = "obsID",
+    pars = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
 )
 
 # View summary of results
-summary(mnl_groups)
+summary(mnl_group_A)
+summary(mnl_group_B)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_groups$gradient
+mnl_group_A$gradient
+mnl_group_B$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_groups$hessian)$values
+eigen(mnl_group_A$hessian)$values
+eigen(mnl_group_B$hessian)$values
 
 # Save model objects
 save(
-    mnl_groups,
-    file = here("models", "mnl_groups.RData")
+    mnl_group_A,
+    mnl_group_B,
+    file = here("models", "mnl_group_wtp.RData")
 )
 
 # -----------------------------------------------------------------------------
 # Generate draws of the model coefficients for each group
 
-# Get the model coefficients and covariance matrix
-coefs <- coef(mnl_groups)
-covariance <- vcov(mnl_groups)
+# Take 10,000 draws of the coefficients of each model
+coefs_A <- coef(mnl_group_A)
+covariance_A <- vcov(mnl_group_A)
+coef_draws_A <- as.data.frame(mvrnorm(10^4, coefs_A, covariance_A))
 
-# Take 10,000 draws of the coefficients
-coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
-coef_draws_A <- coef_draws %>%
-    select(price, fuelEconomy, accelTime, powertrain_Electric)
-coef_draws_B <- coef_draws %>%
-    mutate(
-        price       = price + price_B,
-        fuelEconomy = fuelEconomy + fuelEconomy_B,
-        accelTime   = accelTime + accelTime_B,
-        powertrain_Electric = powertrain_Electric + powertrain_Electric_B) %>%
-    select(price, fuelEconomy, accelTime, powertrain_Electric)
+coefs_B <- coef(mnl_group_B)
+covariance_B <- vcov(mnl_group_B)
+coef_draws_B <- as.data.frame(mvrnorm(10^4, coefs_B, covariance_B))
 
 # -----------------------------------------------------------------------------
 # Compute WTP for each group
 
-wtp_A <- coef_draws_A / (-1* coef_draws_A$price)
-wtp_B <- coef_draws_B / (-1* coef_draws_B$price)
-ci(wtp_A)
-ci(wtp_B)
+ci(coef_draws_A)
+ci(coef_draws_B)
+
+# Compare with estimated coefficients
+coef(mnl_group_A)
+coef(mnl_group_B)
 
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market for each group
