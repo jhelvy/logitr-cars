@@ -26,7 +26,8 @@ data
 
 # Define the sensitivity cases
 # For this case, let's see how the market share for the Electric Vehicle 
-# (option 2) changes with different market prices:
+# (option 2) changes with different EV prices. That is, I'm holding everything
+# the same in every simulation except the price for the EV
 
 prices <- seq(10, 30) # Define sensitivity price levels
 n <- length(prices) # Number of simulations (20)
@@ -35,7 +36,6 @@ scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Set the price for each scenario
 scenarios_price$price[which(scenarios_price$altID == 2)] <- prices 
-
 head(scenarios_price)
 
 # For each case, simulate the market share predictions
@@ -44,12 +44,11 @@ sens_price <- predict(
     newdata = scenarios_price, 
     obsID = 'obsID', 
     ci = 0.95,
-    returnData = TRUE
-    ) %>% 
-    # Add scenario attributes to predictions
-    left_join(scenarios_price) %>% 
-    filter(altID == 2) %>% # Keep only EV alternative
-    select(price, starts_with("predicted_")) # Keep only prices and predictions
+    returnData = TRUE) %>%
+    # Keep only EV alternative
+    filter(altID == 2) %>% 
+    # Keep only prices and predictions
+    select(price, starts_with("predicted_")) 
 
 sens_price
 # The probability shifts from essentially 100% of the market share at 
@@ -99,11 +98,9 @@ sens_atts <- predict(
     newdata = scenarios_atts, 
     obsID = 'obsID', 
     ci = 0.95, 
-    returnData = TRUE
-    ) %>% 
-    # Add scenario attributes to predictions
-    left_join(scenarios_atts) %>% 
-    filter(altID == 2) %>% # Keep only EV alternative
+    returnData = TRUE) %>%
+    # Keep only EV alternative
+    filter(altID == 2) %>% 
     # Keep only attributes and predictions
     select(attribute, case, value, predicted_prob)
 
