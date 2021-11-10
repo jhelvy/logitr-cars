@@ -78,7 +78,7 @@ coefs <- coef(mnl_groups)
 covariance <- vcov(mnl_groups)
 
 # Take 10,000 draws of the coefficients
-coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 coef_draws_A <- coef_draws %>%
     select(price, fuelEconomy, accelTime, powertrain_Electric)
 coef_draws_B <- coef_draws %>%

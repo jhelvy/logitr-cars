@@ -14,7 +14,7 @@ library(maddTools)
 load(here("models", "mnl.RData")) # Load pref space model
 coefs <- coef(mnl_linear)
 covariance <- vcov(mnl_linear)
-coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
 wtp_ci1 <- ci(wtp_draws)
 wtp_ci1
@@ -23,7 +23,7 @@ wtp_ci1
 load(here("models", "mnl_wtp.RData")) # Load estimated models
 coefs <- coef(mnl_wtp)
 covariance <- vcov(mnl_wtp)
-wtp_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+wtp_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 wtp_ci2 <- ci(wtp_draws)
 wtp_ci2 <- wtp_ci2[-1,] # Drop lambda (we won't plot this)
 wtp_ci2

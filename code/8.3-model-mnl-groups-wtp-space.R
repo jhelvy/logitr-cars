@@ -75,11 +75,11 @@ save(
 # Take 10,000 draws of the coefficients of each model
 coefs_A <- coef(mnl_group_A)
 covariance_A <- vcov(mnl_group_A)
-coef_draws_A <- as.data.frame(mvrnorm(10^4, coefs_A, covariance_A))
+coef_draws_A <- as.data.frame(MASS::mvrnorm(10^4, coefs_A, covariance_A))
 
 coefs_B <- coef(mnl_group_B)
 covariance_B <- vcov(mnl_group_B)
-coef_draws_B <- as.data.frame(mvrnorm(10^4, coefs_B, covariance_B))
+coef_draws_B <- as.data.frame(MASS::mvrnorm(10^4, coefs_B, covariance_B))
 
 # -----------------------------------------------------------------------------
 # Compute WTP for each group

@@ -23,7 +23,7 @@ wtp <- coefs / (-1*coefs['price'])
 covariance <- vcov(mnl_linear)
 
 # Take 10,000 draws of the coefficients
-coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 
 # Compute WTP for each coefficient draw
 wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])

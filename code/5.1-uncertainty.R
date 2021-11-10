@@ -17,7 +17,7 @@ coefs <- coef(mnl_linear)
 covariance <- vcov(mnl_linear)
 
 # Take 10,000 draws of the coefficients
-coef_draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 
 # For each coefficient, get the mean and 95% confidence interval:
 coef_ci <- ci(coef_draws, ci = 0.95)
@@ -127,7 +127,7 @@ ggsave(
 # Get the model coefficients and covariance matrix
 coefs <- coef(mnl_dummy)
 covariance <- vcov(mnl_dummy)
-draws <- as.data.frame(mvrnorm(10^4, coefs, covariance))
+draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 coef_ci <- ci(draws, ci = 0.95)
 coef_ci
 

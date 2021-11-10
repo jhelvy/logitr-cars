@@ -9,6 +9,7 @@ install.packages(c(
     "janitor",
     "kableExtra",
     "knitr",
+    "MASS",
     "remotes",
     "rmarkdown",
     "tidyverse",
