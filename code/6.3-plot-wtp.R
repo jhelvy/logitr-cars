@@ -64,10 +64,10 @@ df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
 
 # Get upper and lower bounds (plots should have the same y-axis)
 ymin <- floor(min(c(
-  df_price$lower, df_fuelEconomy$lower,
+  df_fuelEconomy$lower,
   df_accelTime$lower, df_powertrain$lower)))
 ymax <- ceiling(max(c(
-  df_price$upper, df_fuelEconomy$upper,
+  df_fuelEconomy$upper,
   df_accelTime$upper, df_powertrain$upper)))
 
 # Plot the WTP for each attribute *with 95% CI*
