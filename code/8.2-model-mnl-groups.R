@@ -5,6 +5,7 @@ library(logitr)
 library(tidyverse)
 library(fastDummies)
 library(here)
+library(maddTools)
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
