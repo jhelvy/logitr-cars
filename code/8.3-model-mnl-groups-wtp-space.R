@@ -39,14 +39,18 @@ mnl_group_A <- logitr(
     data    = data_A,
     outcome = "choice",
     obsID   = "obsID",
-    pars = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
+    pars = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
+    price = 'price',
+    modelSpace = 'wtp'
 )
 
 mnl_group_B <- logitr(
     data    = data_B,
     outcome = "choice",
     obsID   = "obsID",
-    pars = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
+    pars = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
+    price = 'price',
+    modelSpace = 'wtp'
 )
 
 # View summary of results
