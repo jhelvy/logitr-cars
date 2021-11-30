@@ -14,7 +14,7 @@ load(here("models", "mnl.RData"))
 # Sensitivity of market share to changes in *price*
 
 # Create a set of alternatives for which to simulate shares
-data <- data.frame(
+baseline <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),
     price       = c(15, 25, 21),
@@ -22,7 +22,7 @@ data <- data.frame(
     accelTime   = c(8, 6, 7),
     powertrain_Electric = c(0, 1, 0))
 
-data 
+baseline 
 
 # Define the sensitivity cases
 # For this case, let's see how the market share for the Electric Vehicle 
@@ -30,8 +30,8 @@ data
 # the same in every simulation except the price for the EV
 
 prices <- seq(10, 30) # Define sensitivity price levels
-n <- length(prices) # Number of simulations (20)
-scenarios_price <- rep_df(data, n) # Repeat the alts data frame n times
+n <- length(prices) # Number of simulations (21)
+scenarios_price <- rep_df(baseline, n) # Repeat the baseline data frame n times
 scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Set the price for each scenario
@@ -60,8 +60,8 @@ sens_price
 # For these cases, we'll look at how the market share for the Electric Vehicle 
 # (option 2) changes with +/- 20% changes price, fuel economy, & acceleration time
 
-# In this data frame, cases are "high" if they result in higher market shares
-# and "low" if they result in lower market shares
+# "high" means they result in higher market shares
+# "low"  means they result in lower market shares
 cases <- tribble(
     ~obsID, ~altID, ~attribute,    ~case,  ~value,
     2,      2,     'price',       'high',  25*0.8,
@@ -81,7 +81,7 @@ scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Replace scenarios with case values 
 scenarios_atts <- scenarios_atts %>% 
-    left_join(cases) %>% 
+    left_join(cases, by = c("altID", "obsID")) %>% 
     mutate(
         attribute = ifelse(is.na(attribute), "other", attribute),
         case = ifelse(is.na(case), "base", case),

@@ -71,18 +71,20 @@ ggsave(
 # -----------------------------------------------------------------------------
 # Make a tornado diagram to show market sensitivity to multiple
 
+labels <- data.frame( 
+    attribute = c('price', 'fuelEconomy', 'accelTime'), 
+    label = c('Price ($1,000)', 'Fuel Economy (mpg)', '0-60 mph Acceleration Time')
+)
+
 tornado_data <- sens_atts %>% 
     filter(case != 'base') %>% 
     # Rename variables for plotting labels
-    mutate(attribute = fct_recode(attribute,
-        'Price ($1,000)'             = 'price',
-        'Fuel Economy (mpg)'         = 'fuelEconomy',
-        '0-60 mph Acceleration Time' = 'accelTime'))
+    left_join(labels, by = 'attribute')
 
 tornado_base <- ggtornado(
     data = tornado_data,
     baseline = sens_atts$predicted_prob[1], 
-    var = 'attribute', 
+    var = 'label',
     level = 'case',
     value = 'value', 
     result = 'predicted_prob'
