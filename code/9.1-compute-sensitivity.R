@@ -76,7 +76,7 @@ cases
 
 # Define scenarios
 n <- 7 # baseline + high & low for each attribute
-scenarios_atts <- rep_df(data, n) 
+scenarios_atts <- rep_df(baseline, n) 
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Replace scenarios with case values 

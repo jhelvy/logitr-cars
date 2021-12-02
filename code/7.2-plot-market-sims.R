@@ -42,3 +42,4 @@ ggsave(
     filename = here('figs', 'sim_multi.png'), 
     width = 8, height = 7
 )
+

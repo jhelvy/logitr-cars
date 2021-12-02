@@ -14,7 +14,7 @@ load(here("models", "mnl.RData"))
 summary(mnl_linear)
 
 # Create a set of alternatives for which to simulate shares
-data <- data.frame(
+baseline <- data.frame(
     altID       = c(1, 2, 3), 
     obsID       = c(1, 1, 1),
     price       = c(15, 25, 21),
@@ -23,12 +23,12 @@ data <- data.frame(
     powertrain_Electric  = c(0, 1, 0))
 
 # Columns are attributes, rows are alternatives
-data
+baseline
 
 # Use the predict() function to compute the probabilities
 sim_mnl_linear <- predict(
     mnl_linear,
-    newdata = data, 
+    newdata = baseline, 
     obsID = 'obsID', 
     ci = 0.95, 
     returnData = TRUE # This returns your data along with predicted values
