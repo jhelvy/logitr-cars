@@ -1,7 +1,7 @@
-# Make conjoint surveys using the conjointTools package
+# Make conjoint surveys using the cbcTools package
 
 # Load libraries
-library(conjointTools)
+library(cbcTools)
 library(fastDummies)
 
 # Define the attributes and levels

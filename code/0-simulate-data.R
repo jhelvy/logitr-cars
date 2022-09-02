@@ -1,8 +1,8 @@
-# Make conjoint surveys and simulate choice data using {conjointTools}
+# Make conjoint surveys and simulate choice data using {cbcTools}
 
 # Load libraries
 library(tidyverse)
-library(conjointTools)
+library(cbcTools)
 library(readr)
 library(here)
 
