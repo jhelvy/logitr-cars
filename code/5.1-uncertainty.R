@@ -5,6 +5,7 @@ library(tidyverse)
 library(here)
 library(logitr)
 library(maddTools)
+library(cowplot)
 
 # -----------------------------------------------------------------------------
 # Compute 95% confidence interval using simulation
