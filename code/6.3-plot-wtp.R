@@ -137,3 +137,4 @@ ggsave(
   plot = barplot_mnl_wtp, 
   width = 5, height = 3
 )
+

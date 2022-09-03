@@ -32,3 +32,4 @@ head(wtp_draws)
 # For each coefficient, get the mean and 95% confidence interval of WTP
 wtp_ci <- ci(wtp_draws)
 wtp_ci
+

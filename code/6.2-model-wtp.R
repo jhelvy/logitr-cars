@@ -4,6 +4,8 @@
 library(logitr)
 library(tidyverse)
 library(here)
+library(fastDummies)
+
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the data set:
@@ -20,8 +22,7 @@ mnl_wtp <- logitr(
     outcome = "choice",
     obsID   = "obsID",
     pars    = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    price   = 'price', 
-    modelSpace = 'wtp', 
+    scalePar = 'price', 
     numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex
 )
 
@@ -37,7 +38,7 @@ eigen(mnl_wtp$hessian)$values
 
 # Compare computed versus estimated WTP
 load(here("models", "mnl.RData"))
-wtpCompare(mnl_linear, mnl_wtp, price = 'price')
+wtpCompare(mnl_linear, mnl_wtp, scalePar = 'price')
 
 # Save model
 save(
