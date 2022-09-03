@@ -41,7 +41,14 @@ profiles_attspec <- cbc_profiles(
     accelTime   = c(6, 7, 8),    # 0-60 mph acceleration time (s)
     electric    = c(0, 1),       # Electric vehicle (1) or gas (0)
     range       = c(100, 150, 200, 250) # Driving range (miles)
-)
+) %>% 
+    mutate(
+        range = range - min(range),
+        range = ifelse(electric != 1, 0, range)) %>% 
+    rename(powertrain_Electric = electric) %>% 
+    # Now remove any duplicate rows and re-label the profileIDs
+    distinct() %>% 
+    mutate(profileID = seq(n()))
 
 # Make a full-factorial design of experiment
 design_attspec <- cbc_design(
@@ -49,12 +56,7 @@ design_attspec <- cbc_design(
     n_resp   = 500, # Number of respondents
     n_alts   = 3,   # Number of alternatives per question
     n_q      = 8    # Number of questions per respondent
-) %>% 
-  # Only electric cars should have a range greater than 0
-  mutate(
-    range = range - min(range),
-    range = ifelse(electric != 1, 0, range)) %>% 
-  rename(powertrain_Electric = electric)
+)
 
 # Simulate choices ----
 
@@ -153,3 +155,4 @@ write_csv(data_mxl, here('data', 'mxl.csv'))
 write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
 write_csv(data_nochoice, here('data', 'og.csv'))
 write_csv(data_mnl_attspec, here('data', 'mnl_attspec.csv'))
+

@@ -4,47 +4,42 @@
 library(cbcTools)
 library(fastDummies)
 
-# Define the attributes and levels
-levels <- list(
-  price       = c(15, 20, 25), # Price ($1,000)
-  fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
-  accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
-  powertrain  = c("Gasoline", "Electric")
+# Define profiles with attributes and levels
+profiles <- cbc_profiles(
+    price       = c(15, 20, 25), # Price ($1,000)
+    fuelEconomy = c(20, 25, 30),   # Fuel economy (mpg)
+    accelTime   = c(6, 7, 8),      # 0-60 mph acceleration time (s)
+    powertrain  = c("Gasoline", "Electric")
 )
 
-# Make a full-factorial design of experiment
-doe <- makeDoe(levels)
-head(doe) # preview
-
-# Recode the design of experiment
-doe <- recodeDesign(doe, levels)
-head(doe) # preview
-
-# Make a basic survey
-survey <- makeSurvey(
-    doe       = doe,  # Design of experiment
-    nResp     = 1000, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 8     # Number of questions per respondent
+# Make a full-factorial design of experiment 
+design <- cbc_design(
+    profiles = profiles,
+    n_resp   = 1000, # Number of respondents
+    n_alts   = 3,    # Number of alternatives per question
+    n_q      = 8     # Number of questions per respondent
 )
-head(survey) # preview
 
-# Make a labeld survey with "powertrain" as the label
-survey_labeled <- makeSurvey(
-    doe       = doe,  
-    nResp     = 1000, 
-    nAltsPerQ = 3,  
-    nQPerResp = 8,
-    group     = "powertrain"
-)
-head(survey_labeled) # preview
+head(design) # preview
 
-# Make a survey with outside good
-survey_og <- makeSurvey(
-    doe       = doe,  
-    nResp     = 1000, 
-    nAltsPerQ = 3,  
-    nQPerResp = 8,
-    outsideGood = TRUE
+# Make a labeled design with "powertrain" as the label
+design_labeled <- cbc_design(
+    profiles = profiles,
+    n_resp   = 1000, # Number of respondents
+    n_alts   = 3,    # Number of alternatives per question
+    n_q      = 8,    # Number of questions per respondent
+    label = 'powertrain'
 )
-head(survey_og) # preview
+
+head(design_labeled) # preview
+
+# Make a survey with a "no choice" option
+design_nochoice <- cbc_design(
+    profiles = profiles,
+    n_resp   = 1000, # Number of respondents
+    n_alts   = 3,    # Number of alternatives per question
+    n_q      = 8,    # Number of questions per respondent
+    no_choice = TRUE
+)
+
+head(design_nochoice) # preview
