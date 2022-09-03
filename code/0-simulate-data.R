@@ -153,6 +153,6 @@ data_mnl_2groups$obsID <- rep(seq(500*8), each = 3)
 write_csv(data_mnl1, here('data', 'mnl.csv'))
 write_csv(data_mxl, here('data', 'mxl.csv'))
 write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
-write_csv(data_nochoice, here('data', 'og.csv'))
+write_csv(data_nochoice, here('data', 'nochoice.csv'))
 write_csv(data_mnl_attspec, here('data', 'mnl_attspec.csv'))
 
