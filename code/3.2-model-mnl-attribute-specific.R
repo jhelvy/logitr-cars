@@ -48,7 +48,7 @@ mnl_attspec$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(mnl_attspec$hessian)$values
 
-# What is the utililty of each EV range (100, 150, 200, 250)? 
+# What is the utility of each EV range (100, 150, 200, 250)? 
 ev100 <- coef(mnl_attspec)['powertrain_Electric']
 range <- coef(mnl_attspec)['range']
 ev150 <- ev100 + range*50
