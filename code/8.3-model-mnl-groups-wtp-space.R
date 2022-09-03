@@ -5,6 +5,7 @@ library(logitr)
 library(tidyverse)
 library(fastDummies)
 library(here)
+
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
@@ -40,8 +41,7 @@ mnl_group_A <- logitr(
     outcome = "choice",
     obsID   = "obsID",
     pars = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    price = 'price',
-    modelSpace = 'wtp'
+    scalePar = 'price'
 )
 
 mnl_group_B <- logitr(
@@ -49,8 +49,7 @@ mnl_group_B <- logitr(
     outcome = "choice",
     obsID   = "obsID",
     pars = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    price = 'price',
-    modelSpace = 'wtp'
+    scalePar = 'price'
 )
 
 # View summary of results
@@ -110,11 +109,19 @@ data <- data.frame(
 # Columns are attributes, rows are alternatives
 data 
 
+# Create "price" coefficient as negative of "scalePar"
+coef_draws_A <- coef_draws_A %>% 
+    mutate(price = -1*scalePar) %>% 
+    select(-scalePar)
+coef_draws_B <- coef_draws_B %>% 
+    mutate(price = -1*scalePar) %>% 
+    select(-scalePar)
+
 # Use the logitProbs() function (from {maddTools}) to compute the probabilities
 sim_A <- maddTools::logitProbs(
     coefs = coef_draws_A,
     newdata = data, 
-    obsID = 'obsID', 
+    obsID = 'obsID',
     ci = 0.95
 )
 

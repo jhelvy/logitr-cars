@@ -4,6 +4,7 @@
 library(logitr)
 library(tidyverse)
 library(here)
+
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
@@ -57,8 +58,7 @@ mxl_wtp <- logitr(
     outcome = "choice",
     obsID   = "obsID",
     pars    = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    price   = 'price',
-    modelSpace = 'wtp',
+    scalePar = 'price',
     randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
 )
 
