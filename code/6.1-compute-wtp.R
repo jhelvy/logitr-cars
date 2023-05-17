@@ -4,7 +4,6 @@
 library(logitr)
 library(tidyverse)
 library(here)
-library(jph)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 

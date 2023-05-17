@@ -3,7 +3,6 @@
 # Load libraries & functions
 library(tidyverse)
 library(here)
-library(jph)
 
 # Load simulation results
 load(here("sims", "sens_price_mnl_linear.RData"))
@@ -81,7 +80,7 @@ tornado_data <- sens_atts %>%
     # Rename variables for plotting labels
     left_join(labels, by = 'attribute')
 
-tornado_base <- ggtornado(
+tornado_base <- jph::ggtornado(
     data = tornado_data,
     baseline = sens_atts$predicted_prob[1], 
     var = 'label',

@@ -4,7 +4,6 @@
 library(tidyverse)
 library(here)
 library(logitr)
-library(jph)
 library(cowplot)
 
 # -----------------------------------------------------------------------------

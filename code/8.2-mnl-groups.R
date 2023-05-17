@@ -114,19 +114,21 @@ data <- data.frame(
 # Columns are attributes, rows are alternatives
 data 
 
-# Use the logit_probs() function (from {jph}) to compute the probabilities
-sim_A <- jph::logit_probs(
-    coefs = coef_draws_A,
+# Use the logit_probs() function to compute the probabilities
+sim_A <- logit_probs(
+    mnl_groups
+    coef_draws = coef_draws_A,
     newdata = data, 
     obsID = 'obsID', 
-    ci = 0.95
+    level = 0.95
 )
 
-sim_B <- jph::logit_probs(
-    coefs = coef_draws_B,
+sim_B <- logit_probs(
+    mnl_groups
+    coef_draws = coef_draws_B,
     newdata = data, 
     obsID = 'obsID', 
-    ci = 0.95
+    level = 0.95
 )
 
 sim_A

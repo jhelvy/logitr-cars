@@ -5,7 +5,6 @@ library(logitr)
 library(tidyverse)
 library(here)
 library(cowplot)
-library(jph)
 
 # -----------------------------------------------------------------------------
 # Get WTP estimates with 95% CI
