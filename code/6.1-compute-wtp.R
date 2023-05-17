@@ -4,7 +4,8 @@
 library(logitr)
 library(tidyverse)
 library(here)
-library(maddTools)
+library(jph)
+
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the estimated model
@@ -32,4 +33,3 @@ head(wtp_draws)
 # For each coefficient, get the mean and 95% confidence interval of WTP
 wtp_ci <- ci(wtp_draws)
 wtp_ci
-

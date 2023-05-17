@@ -5,7 +5,7 @@
 library(tidyverse)
 library(here)
 library(logitr)
-library(maddTools)
+library(jph)
 
 # Load estimated models
 load(here("models", "mnl.RData"))

@@ -1,7 +1,9 @@
 # Install packages - only need to do this once!
 
 # Install packages from CRAN
+
 install.packages(c(
+    "cbcTools",
     "cowplot",
     "fastDummies",
     "ggrepel",
@@ -9,6 +11,7 @@ install.packages(c(
     "janitor",
     "kableExtra",
     "knitr",
+    "logitr",
     "MASS",
     "remotes",
     "rmarkdown",
@@ -17,6 +20,5 @@ install.packages(c(
 ))
 
 # Install development packages from GitHub
-remotes::install_github("jhelvy/logitr")
-remotes::install_github("jhelvy/maddTools")
-remotes::install_github("jhelvy/cbcTools")
+
+remotes::install_github("jhelvy/jph")

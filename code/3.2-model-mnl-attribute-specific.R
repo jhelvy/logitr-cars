@@ -5,6 +5,7 @@ library(logitr)
 library(tidyverse)
 library(fastDummies)
 library(here)
+
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
@@ -35,7 +36,8 @@ mnl_attspec <- logitr(
     outcome = "choice",
     obsID   = "obsID",
     pars    = c(
-        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 'range')
+        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 'range'
+    )
 )
 
 # View summary of results
@@ -67,4 +69,3 @@ save(
     mnl_attspec,
     file = here("models", "mnl_attspec.RData")
 )
-

@@ -3,7 +3,7 @@
 # Load libraries & functions
 library(tidyverse)
 library(here)
-library(maddTools)
+library(jph)
 
 # Load simulation results
 load(here("sims", "sens_price_mnl_linear.RData"))

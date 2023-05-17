@@ -5,7 +5,7 @@ library(logitr)
 library(tidyverse)
 library(fastDummies)
 library(here)
-library(maddTools)
+library(jph)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -114,15 +114,15 @@ data <- data.frame(
 # Columns are attributes, rows are alternatives
 data 
 
-# Use the logitProbs() function (from {maddTools}) to compute the probabilities
-sim_A <- maddTools::logitProbs(
+# Use the logit_probs() function (from {jph}) to compute the probabilities
+sim_A <- jph::logit_probs(
     coefs = coef_draws_A,
     newdata = data, 
     obsID = 'obsID', 
     ci = 0.95
 )
 
-sim_B <- maddTools::logitProbs(
+sim_B <- jph::logit_probs(
     coefs = coef_draws_B,
     newdata = data, 
     obsID = 'obsID', 

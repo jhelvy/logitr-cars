@@ -117,15 +117,15 @@ coef_draws_B <- coef_draws_B %>%
     mutate(price = -1*scalePar) %>% 
     select(-scalePar)
 
-# Use the logitProbs() function (from {maddTools}) to compute the probabilities
-sim_A <- maddTools::logitProbs(
+# Use the logit_probs() function (from {jph}) to compute the probabilities
+sim_A <- jph::logit_probs(
     coefs = coef_draws_A,
     newdata = data, 
     obsID = 'obsID',
     ci = 0.95
 )
 
-sim_B <- maddTools::logitProbs(
+sim_B <- jph::logit_probs(
     coefs = coef_draws_B,
     newdata = data, 
     obsID = 'obsID', 
@@ -134,3 +134,17 @@ sim_B <- maddTools::logitProbs(
 
 sim_A
 sim_B
+
+
+
+
+# Estimate a preference space model
+mnl_pref <- logitr(
+  data    = yogurt,
+  outcome = "choice",
+  obsID   = "obsID",
+  pars    = c("price", "feat", "brand")
+)
+
+# Compute a confidence interval
+confint(mnl_pref)
