@@ -31,7 +31,8 @@ sim_mnl_linear <- predict(
     mnl_linear,
     newdata = baseline, 
     obsID = 'obsID', 
-    ci = 0.95, 
+    level = 0.95,
+    interval = 'confidence',
     returnData = TRUE # This returns your data along with predicted values
 )
 
@@ -49,7 +50,8 @@ sim_mnl_linear_multi <- predict(
     mnl_linear,
     newdata = scenarios, 
     obsID = 'obsID', 
-    ci = 0.95,
+    level = 0.95,
+    interval = 'confidence',
     returnData = TRUE
 )
 

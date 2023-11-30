@@ -44,7 +44,8 @@ sens_price <- predict(
     mnl_linear,
     newdata = scenarios_price, 
     obsID = 'obsID', 
-    ci = 0.95,
+    level = 0.95,
+    interval = 'confidence',
     returnData = TRUE) %>%
     # Keep only EV alternative
     filter(altID == 2) %>% 
@@ -98,7 +99,8 @@ sens_atts <- predict(
     mnl_linear,
     newdata = scenarios_atts, 
     obsID = 'obsID', 
-    ci = 0.95, 
+    level = 0.95,
+    interval = 'confidence',
     returnData = TRUE) %>%
     # Keep only EV alternative
     filter(altID == 2) %>% 
