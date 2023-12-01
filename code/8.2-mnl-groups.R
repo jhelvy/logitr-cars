@@ -96,8 +96,8 @@ coef_draws_B <- coef_draws %>%
 
 wtp_A <- coef_draws_A / (-1* coef_draws_A$price)
 wtp_B <- coef_draws_B / (-1* coef_draws_B$price)
-ci(wtp_A)
-ci(wtp_B)
+ci(wtp_A, level = 0.95)
+ci(wtp_B, level = 0.95)
 
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market for each group

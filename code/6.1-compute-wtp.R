@@ -30,5 +30,5 @@ wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
 head(wtp_draws)
 
 # For each coefficient, get the mean and 95% confidence interval of WTP
-wtp_ci <- ci(wtp_draws)
+wtp_ci <- ci(wtp_draws, level = 0.95)
 wtp_ci

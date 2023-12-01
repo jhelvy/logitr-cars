@@ -87,8 +87,8 @@ coef_draws_B <- as.data.frame(MASS::mvrnorm(10^4, coefs_B, covariance_B))
 # -----------------------------------------------------------------------------
 # Compute WTP for each group
 
-ci(coef_draws_A)
-ci(coef_draws_B)
+ci(coef_draws_A, level = 0.95)
+ci(coef_draws_B, level = 0.95)
 
 # Compare with estimated coefficients
 coef(mnl_group_A)

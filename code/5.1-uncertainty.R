@@ -20,7 +20,7 @@ covariance <- vcov(mnl_linear)
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 
 # For each coefficient, get the mean and 95% confidence interval:
-coef_ci <- ci(coef_draws, ci = 0.95)
+coef_ci <- ci(coef_draws, level = 0.95)
 coef_ci
 
 # -----------------------------------------------------------------------------
