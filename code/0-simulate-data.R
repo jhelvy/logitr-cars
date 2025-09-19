@@ -13,7 +13,7 @@ profiles <- cbc_profiles(
     price       = c(15, 20, 25), # Price ($1,000)
     fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
     accelTime   = c(6, 7, 8),    # 0-60 mph acceleration time (s)
-    electric    = c(0, 1)        # Electric vehicle (1) or gas (0)
+    powertrain  = c('gas', 'hybrid', 'electric')
 )
 
 # Make a full-factorial design of experiment 
@@ -24,14 +24,8 @@ design <- cbc_design(
     n_q      = 8    # Number of questions per respondent
 )
 
-# Make a survey with no choice option
-design_nochoice <- cbc_design(
-    profiles = profiles,
-    n_resp   = 500, # Number of respondents
-    n_alts   = 3,   # Number of alternatives per question
-    n_q      = 8,   # Number of questions per respondent
-    no_choice = TRUE
-)
+# View version of design with powertrain not dummy-coded
+cbc_decode(design)
 
 # Make attribute-specific survey ----
 
@@ -39,16 +33,17 @@ profiles_attspec <- cbc_profiles(
     price       = c(15, 20, 25), # Price ($1,000)
     fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
     accelTime   = c(6, 7, 8),    # 0-60 mph acceleration time (s)
-    electric    = c(0, 1),       # Electric vehicle (1) or gas (0)
-    range       = c(100, 150, 200, 250) # Driving range (miles)
+    powertrain  = c('gas', 'hybrid', 'electric'),
+    range_electric = c(100, 150, 200, 250) # EV driving range (miles)
 ) %>% 
-    mutate(
-        range = range - min(range),
-        range = ifelse(electric != 1, 0, range)) %>% 
-    rename(powertrain_Electric = electric) %>% 
+    # Set non-electric ranges to 0
+    mutate(range_electric = ifelse(powertrain != 'electric', 0, range_electric)) %>% 
+    select(-profileID) %>% 
     # Now remove any duplicate rows and re-label the profileIDs
     distinct() %>% 
     mutate(profileID = seq(n()))
+
+dim(profiles_attspec)
 
 # Make a full-factorial design of experiment
 design_attspec <- cbc_design(
@@ -62,39 +57,58 @@ design_attspec <- cbc_design(
 
 # Simulate choices based on a utility model
 
-data_mnl1 <- cbc_choices(
-    design = design,
-    obsID = "obsID",
-    priors = list(
-        price       = -0.7,
-        fuelEconomy = 0.1,
-        accelTime   = -0.2,
-        electric    = -4.0
-    )
+priors <- cbc_priors(
+    profiles = profiles,
+    price       = -0.7,
+    fuelEconomy = 0.1,
+    accelTime   = -0.2,
+    electric    = -4.0
 )
 
-# Choices using a different utility model
+data_mnl1 <- cbc_choices(
+    design = design,
+    priors = priors
+)
+
+# Choices using a different set of priors
+
+priors2 <- cbc_priors(
+    profiles = profiles,
+    price       = -0.7,
+    fuelEconomy = 0.1,
+    accelTime   = -0.2,
+    electric    = -4.0
+)
+
 data_mnl2 <- cbc_choices(
     design = design,
-    obsID = "obsID",
-    priors = list(
-        price       = -0.6,
-        fuelEconomy = 0.15,
-        accelTime   = -0.3,
-        electric    = -1.0
+    priors = priors2
+)
+
+priors_random <- cbc_priors(
+    profiles = profiles,
+    price = -0.7,
+    fuelEconomy = rand_spec(
+        dist = "n",
+        mean = 0.1,
+        sd = 1
+    ),
+    accelTime = rand_spec(
+        dist = "n",
+        mean = -0.2,
+        sd = 2
+    ),
+    electric = rand_spec(
+        dist = "n",
+        mean = -4,
+        sd = 5
     )
 )
 
 # Simulate choices based on a MXL utility model
 data_mxl <- cbc_choices(
     design = design,
-    obsID = "obsID",
-    priors = list(
-        price       = -0.7,
-        fuelEconomy = randN(0.1, 1),
-        accelTime   = randN(-0.2, 2),
-        electric    = randN(-4, 5)
-    )
+    priors = priors_random
 )
 
 # Simulate choices based on a utility model
