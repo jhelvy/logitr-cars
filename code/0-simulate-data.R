@@ -66,7 +66,7 @@ design_attspec <- cbc_design(
   n_resp = 500, # Number of respondents
   n_alts = 3, # Number of alternatives per question
   n_q = 8, # Number of questions per respondent
-  balance_by = 'powertrain' # Include since
+  balance_by = 'powertrain' # Include since balance in profiles is not even
 )
 
 # Check to confirm balance and overlap in all levels is good
