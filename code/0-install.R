@@ -3,22 +3,22 @@
 # Install packages from CRAN
 
 install.packages(c(
-    "cbcTools",
-    "cowplot",
-    "fastDummies",
-    "ggrepel",
-    "here",
-    "janitor",
-    "kableExtra",
-    "knitr",
-    "logitr",
-    "MASS",
-    "remotes",
-    "rmarkdown",
-    "tidyverse",
-    "viridis"
+  "cowplot",
+  "fastDummies",
+  "ggrepel",
+  "here",
+  "janitor",
+  "kableExtra",
+  "knitr",
+  "logitr",
+  "MASS",
+  "remotes",
+  "rmarkdown",
+  "tidyverse",
+  "viridis"
 ))
 
 # Install development packages from GitHub
 
-remotes::install_github("jhelvy/jph")
+pak::pak("jhelvy/jph")
+pak::pak("jhelvy/cbcTools")
