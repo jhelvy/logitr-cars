@@ -22,65 +22,35 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gas
+# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model where all covariates are dummy-coded
-
-# Create dummy coded variables
-data_dummy <- dummy_cols(
-    data, c('price', 'fuelEconomy', 'accelTime', 'powertrain'))
-head(data_dummy)
+# Estimate MNL model with:
+# - Continuous (linear) coefficients for price, fuelEconomy, and accelTime
+# - Dummy-coded (discrete) coefficients for powertrain
 
 # Estimate the model
-mnl_dummy <- logitr(
-    data    = data_dummy,
-    outcome = "choice",
-    obsID   = "obsID",
-    pars    = c(
-        # Remember one level must be "dummied out"
-        "price_20", "price_25", 
-        "fuelEconomy_25", "fuelEconomy_30", 
-        "accelTime_7", "accelTime_8",
-        "powertrain_Electric")
+model_mnl <- logitr(
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainelectric')
 )
 
 # View summary of results
-summary(mnl_dummy)
+summary(model_mnl)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_dummy$gradient
+model_mnl$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_dummy$hessian)$values
+eigen(model_mnl$hessian)$values
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model with continuous (linear) price, fuelEconomy, and accelTime
-
-# Estimate the model
-mnl_linear <- logitr(
-    data    = data_dummy,
-    outcome = "choice",
-    obsID   = "obsID",
-    pars    = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric')
-)
-
-# View summary of results
-summary(mnl_linear)
-
-# Check the 1st order condition: Is the gradient at the solution zero?
-mnl_linear$gradient
-
-# 2nd order condition: Is the hessian negative definite?
-# (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_linear$hessian)$values
-
-# -----------------------------------------------------------------------------
-# Save model objects 
+# Save model object
 
 save(
-    mnl_dummy,
-    mnl_linear,
-    file = here("models", "mnl.RData")
+  model_mnl,
+  file = here("models", "model_mnl.RData")
 )

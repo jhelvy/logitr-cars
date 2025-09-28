@@ -22,40 +22,45 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "range"       = The *additional* driving range of the electric car 
-#                 beyond 100 miles (0 means an EV with a 100-mile range)
-# "powertrain_Electric" = Indicates if the car is electric or gas (1, 0)
+# "range_electric" = The driving range of the electric car
+# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
 
 # -----------------------------------------------------------------------------
-# Estimate MNL model with continuous (linear) price, fuelEconomy, accelTime, 
-# and range
+# Estimate MNL model with:
+# - Continuous (linear) coefficients for price, fuelEconomy, accelTime, and range_electric
+# - Dummy-coded (discrete) coefficients for powertrain
 
 # Estimate the model
-mnl_attspec <- logitr(
-    data    = data,
-    outcome = "choice",
-    obsID   = "obsID",
-    pars    = c(
-        'price', 'fuelEconomy', 'accelTime', 'powertrain_Electric', 'range'
-    )
+model_mnl_attspec <- logitr(
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c(
+    'price',
+    'fuelEconomy',
+    'accelTime',
+    'range_electric',
+    'powertrainelectric'
+  )
 )
 
 # View summary of results
-summary(mnl_attspec)
+summary(model_mnl_attspec)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mnl_attspec$gradient
+model_mnl_attspec$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mnl_attspec$hessian)$values
+eigen(model_mnl_attspec$hessian)$values
 
-# What is the utility of each EV range (100, 150, 200, 250)? 
-ev100 <- coef(mnl_attspec)['powertrain_Electric']
-range <- coef(mnl_attspec)['range']
-ev150 <- ev100 + range*50
-ev200 <- ev100 + range*100
-ev250 <- ev100 + range*150
+# What is the utility of each EV range (100, 150, 200, 250)?
+ev <- coef(model_mnl_attspec)['powertrainelectric']
+range <- coef(model_mnl_attspec)['range_electric']
+ev100 <- ev + range * 100
+ev150 <- ev + range * 150
+ev200 <- ev + range * 200
+ev250 <- ev + range * 250
 
 ev100
 ev150
@@ -66,6 +71,6 @@ ev250
 # Save model object
 
 save(
-    mnl_attspec,
-    file = here("models", "mnl_attspec.RData")
+  model_mnl_attspec,
+  file = here("models", "model_mnl_attspec.RData")
 )
