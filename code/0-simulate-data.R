@@ -10,18 +10,18 @@ library(here)
 
 # Define profiles with attributes and levels
 profiles <- cbc_profiles(
-  price = c(15, 20, 25), # Price ($1,000)
+  price       = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain = c('gas', 'electric')
+  accelTime   = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain  = c('gas', 'electric')
 )
 
 # Make a full-factorial design of experiment
 design <- cbc_design(
   profiles = profiles,
-  n_resp = 500, # Number of respondents
-  n_alts = 3, # Number of alternatives per question
-  n_q = 8 # Number of questions per respondent
+  n_resp   = 500, # Number of respondents
+  n_alts   = 3, # Number of alternatives per question
+  n_q      = 8 # Number of questions per respondent
 )
 
 # View version of design with powertrain not dummy-coded
@@ -30,10 +30,10 @@ cbc_decode(design)
 # Make survey with no_choice option ----
 
 design_no_choice <- cbc_design(
-  profiles = profiles,
-  n_resp = 500, # Number of respondents
-  n_alts = 3, # Number of alternatives per question
-  n_q = 8, # Number of questions per respondent
+  profiles  = profiles,
+  n_resp    = 500, # Number of respondents
+  n_alts    = 3, # Number of alternatives per question
+  n_q       = 8, # Number of questions per respondent
   no_choice = TRUE
 )
 
@@ -41,10 +41,10 @@ design_no_choice <- cbc_design(
 # Make attribute-specific survey ----
 
 profiles_attspec <- cbc_profiles(
-  price = c(15, 20, 25), # Price ($1,000)
+  price       = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain = c('gas', 'electric'),
+  accelTime   = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain  = c('gas', 'electric'),
   # Note that we include 0 in the range below for the non-EV powertrains
   range_electric = c(0, 100, 150, 200, 250) # EV driving range (miles)
 ) %>%
@@ -62,10 +62,10 @@ table(profiles_attspec$powertrain)
 
 # Make a full-factorial design of experiment
 design_attspec <- cbc_design(
-  profiles = profiles_attspec,
-  n_resp = 500, # Number of respondents
-  n_alts = 3, # Number of alternatives per question
-  n_q = 8, # Number of questions per respondent
+  profiles   = profiles_attspec,
+  n_resp     = 500, # Number of respondents
+  n_alts     = 3, # Number of alternatives per question
+  n_q        = 8, # Number of questions per respondent
   balance_by = 'powertrain' # Include since balance in profiles is not even
 )
 
@@ -77,11 +77,11 @@ cbc_inspect(cbc_decode(design_attspec))
 # Simulate choices based on a utility model
 
 priors <- cbc_priors(
-  profiles = profiles,
-  price = -0.7,
+  profiles    = profiles,
+  price       = -0.7,
   fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0
+  accelTime   = -0.2,
+  powertrain  = -4.0
 )
 
 data_mnl1 <- cbc_choices(
@@ -92,11 +92,11 @@ data_mnl1 <- cbc_choices(
 # Choices using a different set of priors
 
 priors2 <- cbc_priors(
-  profiles = profiles,
-  price = -0.7,
+  profiles    = profiles,
+  price       = -0.7,
   fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0
+  accelTime   = -0.2,
+  powertrain  = -4.0
 )
 
 data_mnl2 <- cbc_choices(
@@ -132,12 +132,12 @@ data_mxl <- cbc_choices(
 
 # Simulate choices for no_choice design
 priors_no_choice <- cbc_priors(
-  profiles = profiles,
-  price = -0.7,
+  profiles    = profiles,
+  price       = -0.7,
   fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0,
-  no_choice = -15.0
+  accelTime   = -0.2,
+  powertrain  = -4.0,
+  no_choice   = -15.0
 )
 
 data_no_choice <- cbc_choices(
@@ -147,11 +147,11 @@ data_no_choice <- cbc_choices(
 
 # Simulate choices for alternative-specific attribute design
 priors_attspec <- cbc_priors(
-  profiles = profiles_attspec,
-  price = -0.7,
-  fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0,
+  profiles       = profiles_attspec,
+  price          = -0.7,
+  fuelEconomy    = 0.1,
+  accelTime      = -0.2,
+  powertrain     = -4.0,
   range_electric = 0.05
 )
 
