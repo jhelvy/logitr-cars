@@ -93,10 +93,10 @@ data_mnl1 <- cbc_choices(
 
 priors2 <- cbc_priors(
   profiles = profiles,
-  price = -0.7,
-  fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0
+  price = -0.6,
+  fuelEconomy = 0.15,
+  accelTime = -0.3,
+  powertrain = -1.0
 )
 
 data_mnl2 <- cbc_choices(

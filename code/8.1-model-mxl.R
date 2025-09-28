@@ -21,62 +21,58 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gas
+# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
 
 # -----------------------------------------------------------------------------
 # Estimate preference space MXL model with linear price, fuelEconomy, and accelTime
 
-# Create dummy coefficients for powertrain
-data_dummy <- fastDummies::dummy_cols(data, 'powertrain')
-head(data_dummy)
-
 # Estimate the model
-mxl_pref <- logitr(
-    data    = data_dummy,
-    outcome = "choice",
-    obsID   = "obsID",
-    pars    = c('price', 'fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
+model_mxl_pref <- logitr(
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainelectric'),
+  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainelectric = 'n')
 )
 
 # View summary of results
-summary(mxl_pref)
+summary(model_mxl_pref)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mxl_pref$gradient
+model_mxl_pref$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mxl_pref$hessian)$values
+eigen(model_mxl_pref$hessian)$values
 
 # -----------------------------------------------------------------------------
 # Estimate WTP space MXL model with linear price, fuelEconomy, and accelTime
 
 # Estimate the model
-mxl_wtp <- logitr(
-    data    = data_dummy,
-    outcome = "choice",
-    obsID   = "obsID",
-    pars    = c('fuelEconomy', 'accelTime', 'powertrain_Electric'),
-    scalePar = 'price',
-    randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrain_Electric = 'n')
+model_mxl_wtp <- logitr(
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c('fuelEconomy', 'accelTime', 'powertrainelectric'),
+  scalePar = 'price',
+  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainelectric = 'n')
 )
 
 # View summary of results
-summary(mxl_wtp)
+summary(model_mxl_wtp)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-mxl_wtp$gradient
+model_mxl_wtp$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(mxl_wtp$hessian)$values
+eigen(model_mxl_wtp$hessian)$values
 
 # -----------------------------------------------------------------------------
-# Save model objects 
+# Save model objects
 
 save(
-    mxl_pref,
-    mxl_wtp,
-    file = here("models", "mxl.RData")
+  model_mxl_pref,
+  model_mxl_wtp,
+  file = here("models", "model_mxl.RData")
 )
