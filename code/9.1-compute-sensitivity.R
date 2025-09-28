@@ -8,25 +8,25 @@ library(logitr)
 library(jph)
 
 # Load estimated models
-load(here("models", "mnl.RData"))
+load(here("models", "model_mnl.RData"))
 
 # -----------------------------------------------------------------------------
 # Sensitivity of market share to changes in *price*
 
 # Create a set of alternatives for which to simulate shares
 baseline <- data.frame(
-    altID       = c(1, 2, 3), 
-    obsID       = c(1, 1, 1),
-    price       = c(15, 25, 21),
-    fuelEconomy = c(20, 100, 40),
-    accelTime   = c(8, 6, 7),
-    powertrain_Electric = c(0, 1, 0)
+  altID = c(1, 2, 3),
+  obsID = c(1, 1, 1),
+  price = c(15, 25, 21),
+  fuelEconomy = c(20, 100, 40),
+  accelTime = c(8, 6, 7),
+  powertrainelectric = c(0, 1, 0)
 )
 
-baseline 
+baseline
 
 # Define the sensitivity cases
-# For this case, let's see how the market share for the Electric Vehicle 
+# For this case, let's see how the market share for the Electric Vehicle
 # (option 2) changes with different EV prices. That is, I'm holding everything
 # the same in every simulation except the price for the EV
 
@@ -36,30 +36,32 @@ scenarios_price <- rep_df(baseline, n) # Repeat the baseline data frame n times
 scenarios_price$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
 # Set the price for each scenario
-scenarios_price$price[which(scenarios_price$altID == 2)] <- prices 
+scenarios_price$price[which(scenarios_price$altID == 2)] <- prices
 head(scenarios_price)
 
 # For each case, simulate the market share predictions
 sens_price <- predict(
-    mnl_linear,
-    newdata = scenarios_price, 
-    obsID = 'obsID', 
-    level = 0.95,
-    interval = 'confidence',
-    returnData = TRUE) %>%
-    # Keep only EV alternative
-    filter(altID == 2) %>% 
-    # Keep only prices and predictions
-    select(price, starts_with("predicted_")) 
+  model_mnl,
+  newdata = scenarios_price,
+  obsID = 'obsID',
+  level = 0.95,
+  interval = 'confidence',
+  returnData = TRUE
+) %>%
+  # Keep only EV alternative
+  filter(altID == 2) %>%
+  # Keep only prices and predictions
+  select(price, starts_with("predicted_"))
 
 sens_price
-# The probability shifts from essentially 100% of the market share at 
+
+# The probability shifts from essentially 100% of the market share at
 # a price of $10,000 to 0% at $30,000
 
 # -----------------------------------------------------------------------------
 # Sensitivity of market share to changes in multiple attributes
 
-# For these cases, we'll look at how the market share for the Electric Vehicle 
+# For these cases, we'll look at how the market share for the Electric Vehicle
 # (option 2) changes with +/- 20% changes price, fuel economy, & acceleration time
 
 # "high" means they result in higher market shares
@@ -78,34 +80,35 @@ cases
 
 # Define scenarios
 n <- 7 # baseline + high & low for each attribute
-scenarios_atts <- rep_df(baseline, n) 
+scenarios_atts <- rep_df(baseline, n)
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
-# Replace scenarios with case values 
-scenarios_atts <- scenarios_atts %>% 
-    left_join(cases, by = c("altID", "obsID")) %>% 
-    mutate(
-        attribute = ifelse(is.na(attribute), "other", attribute),
-        case = ifelse(is.na(case), "base", case),
-        price = ifelse(attribute == 'price', value, price),
-        fuelEconomy = ifelse(attribute == 'fuelEconomy', value, fuelEconomy),
-        accelTime = ifelse(attribute == 'accelTime', value, accelTime)
-    )
+# Replace scenarios with case values
+scenarios_atts <- scenarios_atts %>%
+  left_join(cases, by = c("altID", "obsID")) %>%
+  mutate(
+    attribute = ifelse(is.na(attribute), "other", attribute),
+    case = ifelse(is.na(case), "base", case),
+    price = ifelse(attribute == 'price', value, price),
+    fuelEconomy = ifelse(attribute == 'fuelEconomy', value, fuelEconomy),
+    accelTime = ifelse(attribute == 'accelTime', value, accelTime)
+  )
 
 scenarios_atts
 
 # For each case, simulate the market share predictions
 sens_atts <- predict(
-    mnl_linear,
-    newdata = scenarios_atts, 
-    obsID = 'obsID', 
-    level = 0.95,
-    interval = 'confidence',
-    returnData = TRUE) %>%
-    # Keep only EV alternative
-    filter(altID == 2) %>% 
-    # Keep only attributes and predictions
-    select(attribute, case, value, predicted_prob)
+  model_mnl,
+  newdata = scenarios_atts,
+  obsID = 'obsID',
+  level = 0.95,
+  interval = 'confidence',
+  returnData = TRUE
+) %>%
+  # Keep only EV alternative
+  filter(altID == 2) %>%
+  # Keep only attributes and predictions
+  select(attribute, case, value, predicted_prob)
 
 sens_atts
 
@@ -113,7 +116,7 @@ sens_atts
 # Save simulations
 
 save(
-    sens_price,
-    sens_atts,
-    file = here("sims", "sens_price_mnl_linear.RData")
+  sens_price,
+  sens_atts,
+  file = here("sims", "sens_price_mnl.RData")
 )
