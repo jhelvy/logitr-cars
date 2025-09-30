@@ -28,7 +28,7 @@ df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
   mutate(utility = coefs['accelTime'] * (level - min(level)))
 
 df_powertrain = data.frame(level = c("Gasoline", "Electric")) %>%
-  mutate(utility = c(0, coefs['powertrainelectric']))
+  mutate(utility = c(0, coefs['powertrainElectric']))
 
 df_no_choice = data.frame(level = c("No", "Yes")) %>%
   mutate(utility = c(0, coefs['no_choice']))

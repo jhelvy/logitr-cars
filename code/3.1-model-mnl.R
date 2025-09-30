@@ -22,7 +22,7 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
+# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with:
@@ -34,7 +34,7 @@ model_mnl <- logitr(
   data = data,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainelectric')
+  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainElectric')
 )
 
 # View summary of results

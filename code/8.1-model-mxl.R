@@ -21,7 +21,7 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
+# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
 
 # -----------------------------------------------------------------------------
 # Estimate preference space MXL model with linear price, fuelEconomy, and accelTime
@@ -31,8 +31,8 @@ model_mxl_pref <- logitr(
   data = data,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainelectric'),
-  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainelectric = 'n')
+  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainElectric'),
+  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
 )
 
 # View summary of results
@@ -53,9 +53,9 @@ model_mxl_wtp <- logitr(
   data = data,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainelectric'),
+  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price',
-  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainelectric = 'n')
+  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
 )
 
 # View summary of results

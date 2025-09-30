@@ -23,7 +23,7 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
+# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
 # "group"       = Indicates the respondent group ("A" or "B")
 
 # -----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ data <- data %>%
     price_B = price * group_B,
     fuelEconomy_B = fuelEconomy * group_B,
     accelTime_B = accelTime * group_B,
-    powertrainelectric_B = powertrainelectric * group_B
+    powertrainElectric_B = powertrainElectric * group_B
   )
 head(data)
 
@@ -52,12 +52,12 @@ model_mnl_groups <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainelectric',
+    'powertrainElectric',
     # Introduce group interactions with all main effects
     'price_B',
     'fuelEconomy_B',
     'accelTime_B',
-    'powertrainelectric_B'
+    'powertrainElectric_B'
   )
 )
 
@@ -87,15 +87,15 @@ covariance <- vcov(model_mnl_groups)
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 coef_draws_A <- coef_draws %>%
-  select(price, fuelEconomy, accelTime, powertrainelectric)
+  select(price, fuelEconomy, accelTime, powertrainElectric)
 coef_draws_B <- coef_draws %>%
   mutate(
     price = price + price_B,
     fuelEconomy = fuelEconomy + fuelEconomy_B,
     accelTime = accelTime + accelTime_B,
-    powertrainelectric = powertrainelectric + powertrainelectric_B
+    powertrainElectric = powertrainElectric + powertrainElectric_B
   ) %>%
-  select(price, fuelEconomy, accelTime, powertrainelectric)
+  select(price, fuelEconomy, accelTime, powertrainElectric)
 
 # -----------------------------------------------------------------------------
 # Compute WTP for each group
@@ -117,7 +117,7 @@ model_mnl_wtp_group_A <- logitr(
   data = data_A,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainelectric'),
+  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price'
 )
 
@@ -125,7 +125,7 @@ model_mnl_wtp_group_B <- logitr(
   data = data_B,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainelectric'),
+  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price'
 )
 
@@ -176,7 +176,7 @@ data_sim <- data.frame(
   price = c(15, 25, 21),
   fuelEconomy = c(20, 100, 40),
   accelTime = c(8, 6, 7),
-  powertrainelectric = c(0, 1, 0)
+  powertrainElectric = c(0, 1, 0)
 )
 
 # Use the logit_probs() function to compute the probabilities

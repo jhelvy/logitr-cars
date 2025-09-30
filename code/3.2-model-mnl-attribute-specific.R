@@ -22,12 +22,12 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "range_electric" = The driving range of the electric car
-# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
+# "rangeElectric" = The driving range of the electric car
+# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with:
-# - Continuous (linear) coefficients for price, fuelEconomy, accelTime, and range_electric
+# - Continuous (linear) coefficients for price, fuelEconomy, accelTime, and rangeElectric
 # - Dummy-coded (discrete) coefficients for powertrain
 
 # Estimate the model
@@ -39,8 +39,8 @@ model_mnl_attspec <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'range_electric',
-    'powertrainelectric'
+    'rangeElectric',
+    'powertrainElectric'
   )
 )
 
@@ -55,8 +55,8 @@ model_mnl_attspec$gradient
 eigen(model_mnl_attspec$hessian)$values
 
 # What is the utility of each EV range (100, 150, 200, 250)?
-ev <- coef(model_mnl_attspec)['powertrainelectric']
-range <- coef(model_mnl_attspec)['range_electric']
+ev <- coef(model_mnl_attspec)['powertrainElectric']
+range <- coef(model_mnl_attspec)['rangeElectric']
 ev100 <- ev + range * 100
 ev150 <- ev + range * 150
 ev200 <- ev + range * 200

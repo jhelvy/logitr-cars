@@ -20,8 +20,8 @@ wtp_ci1
 
 # Method 2: Estimate WTP in WTP space model:
 load(here("models", "model_mnl_wtp.RData")) # Load estimated models
-coefs <- coef(mnl_wtp)
-covariance <- vcov(mnl_wtp)
+coefs <- coef(model_mnl_wtp)
+covariance <- vcov(model_mnl_wtp)
 wtp_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 wtp_ci2 <- ci(wtp_draws, level = 0.95)
 wtp_ci2 <- wtp_ci2[-1, ] # Drop lambda (we won't plot this)
@@ -37,7 +37,7 @@ wtp_ci <- wtp_ci2
 wtp_ci$par <- row.names(wtp_ci)
 wtp_fuelEconomy <- wtp_ci %>% filter(par == 'fuelEconomy')
 wtp_accelTime <- wtp_ci %>% filter(par == 'accelTime')
-wtp_powertrain <- wtp_ci %>% filter(par == 'powertrainelectric')
+wtp_powertrain <- wtp_ci %>% filter(par == 'powertrainElectric')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)

@@ -17,7 +17,7 @@ model_mnl_wtp <- logitr(
   data = data,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainelectric'),
+  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price',
   numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex
 )

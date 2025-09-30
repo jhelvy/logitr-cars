@@ -10,7 +10,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 # -----------------------------------------------------------------------------
 # Load the data set:
 data_no_choice <- read_csv(here('data', 'no_choice.csv'))
-head(data_nochoice)
+head(data_no_choice)
 
 # Variables:
 # "respID"      = Identifies each survey respondent
@@ -21,7 +21,7 @@ head(data_nochoice)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainelectric" = Indicates if the car is electric or gas (1, 0)
+# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
 # "no_choice" = Indicates the "no choice" alternative
 
 # -----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ model_mnl_no_choice <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainelectric',
+    'powertrainElectric',
     'no_choice'
   )
 )

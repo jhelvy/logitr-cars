@@ -13,7 +13,7 @@ profiles <- cbc_profiles(
   price = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
   accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain = c('gas', 'electric')
+  powertrain = c('Gasoline', 'Electric')
 )
 
 # Make a full-factorial design of experiment
@@ -41,17 +41,17 @@ design_no_choice <- cbc_design(
 # Make attribute-specific survey ----
 
 profiles_attspec <- cbc_profiles(
-  price = c(15, 20, 25), # Price ($1,000)
+  price       = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain = c('gas', 'electric'),
+  accelTime   = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain  = c('Gasoline', 'Electric'),
   # Note that we include 0 in the range below for the non-EV powertrains
-  range_electric = c(0, 100, 150, 200, 250) # EV driving range (miles)
+  rangeElectric = c(0, 100, 150, 200, 250) # EV driving range (miles)
 ) %>%
   # Now restrict the range to appropriate levels based on the powertrain
   cbc_restrict(
-    (powertrain == 'electric') & (range_electric == 0),
-    (powertrain != 'electric') & (range_electric != 0),
+    (powertrain == 'Electric') & (rangeElectric == 0),
+    (powertrain != 'Electric') & (rangeElectric != 0),
   )
 
 # View the profiles to confirm that range is 0 for non-electric powertrains
@@ -147,12 +147,12 @@ data_no_choice <- cbc_choices(
 
 # Simulate choices for alternative-specific attribute design
 priors_attspec <- cbc_priors(
-  profiles = profiles_attspec,
-  price = -0.7,
-  fuelEconomy = 0.1,
-  accelTime = -0.2,
-  powertrain = -4.0,
-  range_electric = 0.02
+  profiles      = profiles_attspec,
+  price         = -0.7,
+  fuelEconomy   = 0.1,
+  accelTime     = -0.2,
+  powertrain    = -4.0,
+  rangeElectric = 0.02
 )
 
 data_attspec <- cbc_choices(
@@ -172,13 +172,13 @@ varNames <- c(
   'price',
   'fuelEconomy',
   'accelTime',
-  'powertrainelectric'
+  'powertrainElectric'
 )
 data_mnl1 <- data_mnl1[varNames]
 data_mnl2 <- data_mnl2[varNames]
 data_mxl <- data_mxl[varNames]
 data_no_choice <- data_no_choice[c(varNames, 'no_choice')]
-data_attspec <- data_attspec[c(varNames, 'range_electric')]
+data_attspec <- data_attspec[c(varNames, 'rangeElectric')]
 
 # Create "2groups" data by combining half of data_mnl1 and data_mnl2
 data_mnl2 <- data_mnl2 %>%
