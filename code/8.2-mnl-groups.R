@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(fastDummies)
+library(cbcTools)
 library(here)
 library(jph)
 
@@ -23,23 +23,23 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
+# "powertrain"  = Indicates if the car is electric or gasoline
 # "group"       = Indicates the respondent group ("A" or "B")
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
-# Create dummy coefficients for the group
-data <- fastDummies::dummy_cols(data, 'group')
-head(data)
+# First dummy code the powertrain variable
+data <- data %>%
+  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
 
-# Create interactions of each variable with group_B
+# Create interactions of each variable with groupB
 data <- data %>%
   mutate(
-    price_B = price * group_B,
-    fuelEconomy_B = fuelEconomy * group_B,
-    accelTime_B = accelTime * group_B,
-    powertrainElectric_B = powertrainElectric * group_B
+    price_B = price * groupB,
+    fuelEconomy_B = fuelEconomy * groupB,
+    accelTime_B = accelTime * groupB,
+    powertrainElectric_B = powertrainElectric * groupB
   )
 head(data)
 
@@ -109,11 +109,11 @@ ci(wtp_B, level = 0.95)
 # Alternatively, can just directly estimate WTP for each group
 
 # First, split data into groups
-data_A <- data %>% filter(group == "A")
-data_B <- data %>% filter(group == "B")
+data_A <- data %>% filter(groupB == 0)
+data_B <- data %>% filter(groupB == 1)
 
 # Estimate separate models for each group
-model_mnl_wtp_group_A <- logitr(
+model_mnl_wtp_groupA <- logitr(
   data = data_A,
   outcome = "choice",
   obsID = "obsID",
@@ -121,7 +121,7 @@ model_mnl_wtp_group_A <- logitr(
   scalePar = 'price'
 )
 
-model_mnl_wtp_group_B <- logitr(
+model_mnl_wtp_groupB <- logitr(
   data = data_B,
   outcome = "choice",
   obsID = "obsID",
@@ -130,22 +130,22 @@ model_mnl_wtp_group_B <- logitr(
 )
 
 # View summary of results
-summary(model_mnl_wtp_group_A)
-summary(model_mnl_wtp_group_B)
+summary(model_mnl_wtp_groupA)
+summary(model_mnl_wtp_groupB)
 
 # Check the 1st order condition: Is the gradient at the solution zero?
-model_mnl_wtp_group_A$gradient
-model_mnl_wtp_group_B$gradient
+model_mnl_wtp_groupA$gradient
+model_mnl_wtp_groupB$gradient
 
 # 2nd order condition: Is the hessian negative definite?
 # (If all the eigenvalues are negative, the hessian is negative definite)
-eigen(model_mnl_wtp_group_A$hessian)$values
-eigen(model_mnl_wtp_group_B$hessian)$values
+eigen(model_mnl_wtp_groupA$hessian)$values
+eigen(model_mnl_wtp_groupB$hessian)$values
 
 # Save model objects
 save(
-  model_mnl_wtp_group_A,
-  model_mnl_wtp_group_B,
+  model_mnl_wtp_groupA,
+  model_mnl_wtp_groupB,
   file = here("models", "model_mnl_group_wtp.RData")
 )
 
@@ -153,12 +153,12 @@ save(
 # Compute WTP for each group with uncertainty
 
 # Take 10,000 draws of the coefficients of each model
-coefs_A <- coef(model_mnl_wtp_group_A)
-covariance_A <- vcov(model_mnl_wtp_group_A)
+coefs_A <- coef(model_mnl_wtp_groupA)
+covariance_A <- vcov(model_mnl_wtp_groupA)
 coef_draws_A <- as.data.frame(MASS::mvrnorm(10^4, coefs_A, covariance_A))
 
-coefs_B <- coef(model_mnl_wtp_group_B)
-covariance_B <- vcov(model_mnl_wtp_group_B)
+coefs_B <- coef(model_mnl_wtp_groupB)
+covariance_B <- vcov(model_mnl_wtp_groupB)
 coef_draws_B <- as.data.frame(MASS::mvrnorm(10^4, coefs_B, covariance_B))
 
 # Compute WTP for each group
@@ -181,7 +181,7 @@ data_sim <- data.frame(
 
 # Use the logit_probs() function to compute the probabilities
 sim_A <- predict(
-  model_mnl_wtp_group_A,
+  model_mnl_wtp_groupA,
   newdata = data_sim,
   obsID = 'obsID',
   level = 0.95,
@@ -190,7 +190,7 @@ sim_A <- predict(
 )
 
 sim_B <- predict(
-  model_mnl_wtp_group_B,
+  model_mnl_wtp_groupB,
   newdata = data_sim,
   obsID = 'obsID',
   level = 0.95,

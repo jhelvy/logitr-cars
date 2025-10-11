@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(fastDummies)
+library(cbcTools)
 library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
@@ -22,12 +22,16 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
+# "powertrain"  = Indicates if the car is electric or gasoline
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with:
 # - Continuous (linear) coefficients for price, fuelEconomy, and accelTime
 # - Dummy-coded (discrete) coefficients for powertrain
+
+# First dummy code the powertrain variable
+data <- data %>%
+  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
 
 # Estimate the model
 model_mnl <- logitr(

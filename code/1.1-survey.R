@@ -22,7 +22,7 @@ design <- cbc_design(
 
 head(design) # preview
 
-head(cbc_decode(design)) # preview with powertrain not dummy-coded
+head(cbc_encode(design, 'dummy')) # preview with powertrain dummy-coded
 
 # Make a labeled design with "powertrain" as the label
 design_labeled <- cbc_design(
@@ -31,9 +31,7 @@ design_labeled <- cbc_design(
   n_alts = 2, # Number of alternatives per question
   n_q = 8, # Number of questions per respondent
   label = 'powertrain'
-) %>%
-  # Adding decoding here so that the powertrain level remains not dummy-coded
-  cbc_decode()
+)
 
 head(design_labeled) # preview
 
@@ -48,6 +46,6 @@ design_no_choice <- cbc_design(
 
 head(design_no_choice) # preview
 
-# Note that for designs with a no_choice option, all categorical variables
-# MUST be dummy-coded, so cbc_decode won't work:
-cbc_decode(design_no_choice)
+# View dummy-coded version
+design_no_choice |>
+  cbc_encode('dummy')

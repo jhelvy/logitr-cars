@@ -24,7 +24,7 @@ head(data)
 data %>% count(price)
 data %>% count(fuelEconomy)
 data %>% count(accelTime)
-data %>% count(powertrainElectric)
+data %>% count(powertrain)
 
 # Count number of times each alternative was chosen:
 data %>% count(altID, choice)
@@ -45,8 +45,8 @@ data %>%
 
 # Visualize how many times electric cars were chosen compared to gasoline cars:
 data %>%
-  count(powertrainElectric, choice)
+  count(powertrain, choice)
 
 data %>%
   ggplot() +
-  geom_col(aes(x = as.factor(powertrainElectric), y = choice))
+  geom_col(aes(x = as.factor(powertrain), y = choice))

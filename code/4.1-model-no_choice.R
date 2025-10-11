@@ -3,14 +3,15 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
+library(cbcTools)
 library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data_no_choice <- read_csv(here('data', 'no_choice.csv'))
-head(data_no_choice)
+data <- read_csv(here('data', 'no_choice.csv'))
+head(data)
 
 # Variables:
 # "respID"      = Identifies each survey respondent
@@ -21,15 +22,19 @@ head(data_no_choice)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrainElectric" = Indicates if the car is electric or gasoline (1, 0)
+# "powertrain" = Indicates if the car is electric or gasoline
 # "no_choice" = Indicates the "no choice" alternative
 
 # -----------------------------------------------------------------------------
 # Estimate MNL model with outside good
 
+# First dummy code the powertrain variable
+data <- data %>%
+  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
+
 # Estimate the model
 model_mnl_no_choice <- logitr(
-  data = data_no_choice,
+  data = data,
   outcome = "choice",
   obsID = "obsID",
   pars = c(

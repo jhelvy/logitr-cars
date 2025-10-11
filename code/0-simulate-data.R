@@ -24,8 +24,7 @@ design <- cbc_design(
   n_q = 8 # Number of questions per respondent
 )
 
-# View version of design with powertrain not dummy-coded
-cbc_decode(design)
+head(design)
 
 # Make survey with no_choice option ----
 
@@ -37,14 +36,19 @@ design_no_choice <- cbc_design(
   no_choice = TRUE
 )
 
+head(design_no_choice)
+
+# View dummy-coded version
+design_no_choice |>
+  cbc_encode('dummy')
 
 # Make attribute-specific survey ----
 
 profiles_attspec <- cbc_profiles(
-  price       = c(15, 20, 25), # Price ($1,000)
+  price = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime   = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain  = c('Gasoline', 'Electric'),
+  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain = c('Gasoline', 'Electric'),
   # Note that we include 0 in the range below for the non-EV powertrains
   rangeElectric = c(0, 100, 150, 200, 250) # EV driving range (miles)
 ) %>%
@@ -70,7 +74,7 @@ design_attspec <- cbc_design(
 )
 
 # Check to confirm balance and overlap in all levels is good
-cbc_inspect(cbc_decode(design_attspec))
+cbc_inspect(design_attspec)
 
 # Simulate choices ----
 
@@ -147,11 +151,11 @@ data_no_choice <- cbc_choices(
 
 # Simulate choices for alternative-specific attribute design
 priors_attspec <- cbc_priors(
-  profiles      = profiles_attspec,
-  price         = -0.7,
-  fuelEconomy   = 0.1,
-  accelTime     = -0.2,
-  powertrain    = -4.0,
+  profiles = profiles_attspec,
+  price = -0.7,
+  fuelEconomy = 0.1,
+  accelTime = -0.2,
+  powertrain = -4.0,
   rangeElectric = 0.02
 )
 
@@ -172,7 +176,7 @@ varNames <- c(
   'price',
   'fuelEconomy',
   'accelTime',
-  'powertrainElectric'
+  'powertrain'
 )
 data_mnl1 <- data_mnl1[varNames]
 data_mnl2 <- data_mnl2[varNames]

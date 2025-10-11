@@ -3,14 +3,18 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
+library(cbcTools)
 library(here)
-library(fastDummies)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the data set:
 data <- read_csv(here('data', 'mnl.csv'))
 head(data)
+
+# First dummy code the powertrain variable
+data <- data %>%
+  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
 
 # Estimate the model
 model_mnl_wtp <- logitr(
