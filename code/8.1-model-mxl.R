@@ -33,10 +33,10 @@ data <- data %>%
 
 # Estimate the model
 model_mxl_pref <- logitr(
-  data = data,
-  outcome = "choice",
-  obsID = "obsID",
-  pars = c('price', 'fuelEconomy', 'accelTime', 'powertrainElectric'),
+  data     = data,
+  outcome  = "choice",
+  obsID    = "obsID",
+  pars     = c('price', 'fuelEconomy', 'accelTime', 'powertrainElectric'),
   randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
 )
 
@@ -55,10 +55,10 @@ eigen(model_mxl_pref$hessian)$values
 
 # Estimate the model
 model_mxl_wtp <- logitr(
-  data = data,
-  outcome = "choice",
-  obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  data     = data,
+  outcome  = "choice",
+  obsID    = "obsID",
+  pars     = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price',
   randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
 )

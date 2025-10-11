@@ -44,8 +44,8 @@ wtp_powertrain <- wtp_ci %>% filter(par == 'powertrainElectric')
 #   utility = The utility associated with each level (y-axis)
 df_fuelEconomy <- data.frame(level = c(20, 25, 30)) %>%
   mutate(
-    diff = level - min(level),
-    mean = diff * wtp_fuelEconomy$mean,
+    diff  = level - min(level),
+    mean  = diff * wtp_fuelEconomy$mean,
     lower = diff * wtp_fuelEconomy$lower,
     upper = diff * wtp_fuelEconomy$upper
   )
@@ -54,8 +54,8 @@ df_fuelEconomy
 
 df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
   mutate(
-    diff = level - min(level),
-    mean = diff * wtp_accelTime$mean,
+    diff  = level - min(level),
+    mean  = diff * wtp_accelTime$mean,
     lower = diff * wtp_accelTime$lower,
     upper = diff * wtp_accelTime$upper
   )
@@ -64,7 +64,7 @@ df_accelTime
 
 df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
   mutate(
-    mean = c(0, wtp_powertrain$mean),
+    mean  = c(0, wtp_powertrain$mean),
     lower = c(0, wtp_powertrain$lower),
     upper = c(0, wtp_powertrain$upper)
   )

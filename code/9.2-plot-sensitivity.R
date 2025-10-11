@@ -12,8 +12,8 @@ load(here("sims", "sens_price_mnl.RData"))
 
 share_price_plot <- sens_price %>%
   ggplot(aes(
-    x = price,
-    y = predicted_prob,
+    x    = price,
+    y    = predicted_prob,
     ymin = predicted_prob_lower,
     ymax = predicted_prob_upper
   )) +
@@ -92,12 +92,12 @@ tornado_data <- sens_atts %>%
   left_join(labels, by = 'attribute')
 
 tornado_base <- jph::ggtornado(
-  data = tornado_data,
+  data     = tornado_data,
   baseline = sens_atts$predicted_prob[1],
-  var = 'label',
-  level = 'case',
-  value = 'value',
-  result = 'predicted_prob'
+  var      = 'label',
+  level    = 'case',
+  value    = 'value',
+  result   = 'predicted_prob'
 )
 
 # Change the fill colors, adjust labels

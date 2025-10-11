@@ -36,9 +36,9 @@ data <- data %>%
 # Create interactions of each variable with groupB
 data <- data %>%
   mutate(
-    price_B = price * groupB,
-    fuelEconomy_B = fuelEconomy * groupB,
-    accelTime_B = accelTime * groupB,
+    price_B              = price * groupB,
+    fuelEconomy_B        = fuelEconomy * groupB,
+    accelTime_B          = accelTime * groupB,
     powertrainElectric_B = powertrainElectric * groupB
   )
 head(data)
@@ -90,9 +90,9 @@ coef_draws_A <- coef_draws %>%
   select(price, fuelEconomy, accelTime, powertrainElectric)
 coef_draws_B <- coef_draws %>%
   mutate(
-    price = price + price_B,
-    fuelEconomy = fuelEconomy + fuelEconomy_B,
-    accelTime = accelTime + accelTime_B,
+    price              = price + price_B,
+    fuelEconomy        = fuelEconomy + fuelEconomy_B,
+    accelTime          = accelTime + accelTime_B,
     powertrainElectric = powertrainElectric + powertrainElectric_B
   ) %>%
   select(price, fuelEconomy, accelTime, powertrainElectric)
