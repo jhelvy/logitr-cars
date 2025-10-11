@@ -14,14 +14,17 @@ head(data)
 
 # First dummy code the powertrain variable
 data <- data %>%
-  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
+  cbc_encode(
+    coding = "dummy",
+    ref_levels = list(powertrain = "Gasoline")
+  )
 
 # Estimate the model
 model_mnl_wtp <- logitr(
-  data     = data,
-  outcome  = "choice",
-  obsID    = "obsID",
-  pars     = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
   scalePar = 'price',
   numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex
 )

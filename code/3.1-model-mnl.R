@@ -31,7 +31,12 @@ head(data)
 
 # First dummy code the powertrain variable
 data <- data %>%
-  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
+  cbc_encode(
+    coding = "dummy",
+    ref_levels = list(powertrain = "Gasoline")
+  )
+
+head(data) # preview
 
 # Estimate the model
 model_mnl <- logitr(
