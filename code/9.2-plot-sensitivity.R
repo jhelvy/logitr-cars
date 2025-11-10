@@ -12,8 +12,8 @@ load(here("sims", "sens_price_mnl.RData"))
 
 share_price_plot <- sens_price %>%
   ggplot(aes(
-    x    = price,
-    y    = predicted_prob,
+    x = price,
+    y = predicted_prob,
     ymin = predicted_prob_lower,
     ymax = predicted_prob_upper
   )) +
@@ -78,11 +78,19 @@ ggsave(
 # Make a tornado diagram to show market sensitivity to multiple
 
 labels <- data.frame(
-  attribute = c('price', 'fuelEconomy', 'accelTime'),
+  attribute = c(
+    'price',
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
   label = c(
     'Price ($1,000)',
     'Fuel Economy (mpg)',
-    '0-60 mph Acceleration Time'
+    '0-60 mph Acceleration Time',
+    "Powertrain:\nElectric over Gasoline",
+    "Powertrain:\nHybrid over Gasoline"
   )
 )
 
@@ -92,12 +100,12 @@ tornado_data <- sens_atts %>%
   left_join(labels, by = 'attribute')
 
 tornado_base <- jph::ggtornado(
-  data     = tornado_data,
+  data = tornado_data,
   baseline = sens_atts$predicted_prob[1],
-  var      = 'label',
-  level    = 'case',
-  value    = 'value',
-  result   = 'predicted_prob'
+  var = 'label',q
+  level = 'case',
+  value = 'value',
+  result = 'predicted_prob'
 )
 
 # Change the fill colors, adjust labels

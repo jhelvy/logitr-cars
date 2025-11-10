@@ -6,7 +6,7 @@ library(here)
 library(logitr)
 library(cowplot)
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Compute 95% confidence interval using simulation
 
 # Load estimated models
@@ -23,7 +23,7 @@ coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 coef_ci <- ci(coef_draws, level = 0.95)
 coef_ci
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Visualize uncertainty around parameter estimates
 # Linear model
 
@@ -32,7 +32,8 @@ coef_ci$par <- row.names(coef_ci)
 coef_price <- coef_ci %>% filter(par == 'price')
 coef_fuelEconomy <- coef_ci %>% filter(par == 'fuelEconomy')
 coef_accelTime <- coef_ci %>% filter(par == 'accelTime')
-coef_powertrain <- coef_ci %>% filter(par == 'powertrainElectric')
+coef_powertrainHybrid <- coef_ci %>% filter(par == 'powertrainHybrid')
+coef_powertrainElectric <- coef_ci %>% filter(par == 'powertrainElectric')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
@@ -67,11 +68,11 @@ df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
 
 df_accelTime
 
-df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
+df_powertrain <- data.frame(level = c("Gasoline", "Electric", "Hybrid")) %>%
   mutate(
-    mean = c(0, coef_powertrain$mean),
-    lower = c(0, coef_powertrain$lower),
-    upper = c(0, coef_powertrain$upper)
+    mean = c(0, coef_powertrainElectric$mean, coef_powertrainHybrid$mean),
+    lower = c(0, coef_powertrainElectric$lower, coef_powertrainHybrid$lower),
+    upper = c(0, coef_powertrainElectric$upper, coef_powertrainHybrid$upper)
   )
 
 df_powertrain

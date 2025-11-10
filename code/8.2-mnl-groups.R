@@ -9,7 +9,7 @@ library(jph)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Load the data set:
 data <- read_csv(here('data', 'mnl_2groups.csv'))
 head(data)
@@ -23,23 +23,27 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gasoline
+# "powertrain"  = Indicates if the car is gasoline, hybrid, or electric
 # "group"       = Indicates the respondent group ("A" or "B")
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
-# First dummy code the powertrain variable
+# Dummy code any categorical variables (powertrain)
 data <- data %>%
-  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
+  cbc_encode(
+    coding = "dummy",
+    ref_levels = list(powertrain = "Gasoline")
+  )
 
 # Create interactions of each variable with groupB
 data <- data %>%
   mutate(
-    price_B              = price * groupB,
-    fuelEconomy_B        = fuelEconomy * groupB,
-    accelTime_B          = accelTime * groupB,
-    powertrainElectric_B = powertrainElectric * groupB
+    price_B = price * groupB,
+    fuelEconomy_B = fuelEconomy * groupB,
+    accelTime_B = accelTime * groupB,
+    powertrainElectric_B = powertrainElectric * groupB,
+    powertrainHybrid_B = powertrainHybrid * groupB
   )
 head(data)
 
@@ -53,11 +57,13 @@ model_mnl_groups <- logitr(
     'fuelEconomy',
     'accelTime',
     'powertrainElectric',
+    'powertrainHybrid',
     # Introduce group interactions with all main effects
     'price_B',
     'fuelEconomy_B',
     'accelTime_B',
-    'powertrainElectric_B'
+    'powertrainElectric_B',
+    'powertrainHybrid_B'
   )
 )
 
@@ -77,7 +83,7 @@ save(
   file = here("models", "model_mnl_groups.RData")
 )
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Generate draws of the model coefficients for each group
 
 # Get the model coefficients and covariance matrix
@@ -87,17 +93,30 @@ covariance <- vcov(model_mnl_groups)
 # Take 10,000 draws of the coefficients
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 coef_draws_A <- coef_draws %>%
-  select(price, fuelEconomy, accelTime, powertrainElectric)
+  select(
+    price,
+    fuelEconomy,
+    accelTime,
+    powertrainElectric,
+    powertrainHybrid
+  )
 coef_draws_B <- coef_draws %>%
   mutate(
-    price              = price + price_B,
-    fuelEconomy        = fuelEconomy + fuelEconomy_B,
-    accelTime          = accelTime + accelTime_B,
-    powertrainElectric = powertrainElectric + powertrainElectric_B
+    price = price + price_B,
+    fuelEconomy = fuelEconomy + fuelEconomy_B,
+    accelTime = accelTime + accelTime_B,
+    powertrainElectric = powertrainElectric + powertrainElectric_B,
+    powertrainHybrid = powertrainHybrid + powertrainHybrid_B
   ) %>%
-  select(price, fuelEconomy, accelTime, powertrainElectric)
+  select(
+    price,
+    fuelEconomy,
+    accelTime,
+    powertrainElectric,
+    powertrainHybrid
+  )
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Compute WTP for each group
 
 wtp_A <- coef_draws_A / (-1 * coef_draws_A$price)
@@ -105,7 +124,7 @@ wtp_B <- coef_draws_B / (-1 * coef_draws_B$price)
 ci(wtp_A, level = 0.95)
 ci(wtp_B, level = 0.95)
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Alternatively, can just directly estimate WTP for each group
 
 # First, split data into groups
@@ -117,7 +136,12 @@ model_mnl_wtp_groupA <- logitr(
   data = data_A,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  pars = c(
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
   scalePar = 'price'
 )
 
@@ -125,7 +149,12 @@ model_mnl_wtp_groupB <- logitr(
   data = data_B,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  pars = c(
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
   scalePar = 'price'
 )
 
@@ -149,7 +178,7 @@ save(
   file = here("models", "model_mnl_group_wtp.RData")
 )
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Compute WTP for each group with uncertainty
 
 # Take 10,000 draws of the coefficients of each model
@@ -166,7 +195,7 @@ ci(coef_draws_A, level = 0.95)
 ci(coef_draws_B, level = 0.95)
 
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Simulate the market shares of a given market for each group
 
 # Create a set of alternatives for which to simulate shares
@@ -176,7 +205,8 @@ data_sim <- data.frame(
   price = c(15, 25, 21),
   fuelEconomy = c(20, 100, 40),
   accelTime = c(8, 6, 7),
-  powertrainElectric = c(0, 1, 0)
+  powertrainElectric = c(0, 1, 0),
+  powertrainHybrid = c(0, 0, 1)
 )
 
 # Use the logit_probs() function to compute the probabilities

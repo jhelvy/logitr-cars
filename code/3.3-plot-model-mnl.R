@@ -9,7 +9,7 @@ library(cowplot)
 # Load estimated models
 load(here("models", "model_mnl.RData"))
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Some tips for working with model objects
 
 # If you want to get the resulting model parameters, use the coef() function
@@ -22,7 +22,7 @@ se(model_mnl)
 # as a data frame, use coef(summary(model))
 coef(summary(model_mnl))
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Plot results
 
 # Get the estimated coefficients
@@ -55,8 +55,10 @@ df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
 
 df_accelTime
 
-df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
-  mutate(utility = c(0, coefs['powertrainElectric']))
+df_powertrain <- data.frame(level = c("Gasoline", "Hybrid", "Electric")) %>%
+  mutate(
+    utility = c(0, coefs['powertrainHybrid'], coefs['powertrainElectric'])
+  )
 
 df_powertrain
 

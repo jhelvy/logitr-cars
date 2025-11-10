@@ -20,7 +20,8 @@ baseline <- data.frame(
   price              = c(15, 25, 21),
   fuelEconomy        = c(20, 100, 40),
   accelTime          = c(8, 6, 7),
-  powertrainElectric = c(0, 1, 0)
+  powertrainElectric = c(0, 1, 0),
+  powertrainHybrid = c(0, 0, 1)
 )
 
 baseline
@@ -73,13 +74,17 @@ cases <- tribble(
     4,      2,     'fuelEconomy', 'high',  100*1.2,
     5,      2,     'fuelEconomy', 'low',   100*0.8,
     6,      2,     'accelTime',   'high',  6*0.8,
-    7,      2,     'accelTime',   'low',   6*1.2
+    7,      2,     'accelTime',   'low',   6*1.2,
+    8,      2,     'powertrainElectric', 'high', 0,
+    9,      2,     'powertrainElectric', 'low', 1,
+    10,     2,     'powertrainHybrid', 'high', 1,
+    11,     2,     'powertrainHybrid', 'low', 0
 )
 
 cases
 
 # Define scenarios
-n <- 7 # baseline + high & low for each attribute
+n <- 11 # baseline + high & low for each attribute
 scenarios_atts <- rep_df(baseline, n)
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
@@ -91,7 +96,9 @@ scenarios_atts <- scenarios_atts %>%
     case = ifelse(is.na(case), "base", case),
     price = ifelse(attribute == 'price', value, price),
     fuelEconomy = ifelse(attribute == 'fuelEconomy', value, fuelEconomy),
-    accelTime = ifelse(attribute == 'accelTime', value, accelTime)
+    accelTime = ifelse(attribute == 'accelTime', value, accelTime),
+    powertrainElectric = ifelse(attribute == 'powertrainElectric', value, powertrainElectric),
+    powertrainHybrid = ifelse(attribute == 'powertrainHybrid', value, powertrainHybrid)
   )
 
 scenarios_atts

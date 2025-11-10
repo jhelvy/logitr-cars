@@ -8,7 +8,7 @@ library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Load the data set:
 data <- read_csv(here('data', 'mnl_attspec.csv'))
 head(data)
@@ -23,14 +23,14 @@ head(data)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
 # "rangeElectric" = The driving range of the electric car
-# "powertrain" = Indicates if the car is electric or gasoline
+# "powertrain"  = Indicates if the car is gasoline, hybrid, or electric
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Estimate MNL model with:
 # - Continuous (linear) coefficients for price, fuelEconomy, accelTime, and rangeElectric
 # - Dummy-coded (discrete) coefficients for powertrain
 
-# First dummy code the powertrain variable
+# Dummy code any categorical variables (powertrain)
 data <- data %>%
   cbc_encode(
     coding = "dummy",
@@ -47,7 +47,8 @@ model_mnl_attspec <- logitr(
     'fuelEconomy',
     'accelTime',
     'rangeElectric',
-    'powertrainElectric'
+    'powertrainElectric',
+    'powertrainHybrid'
   )
 )
 
@@ -74,7 +75,7 @@ ev150
 ev200
 ev250
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Save model object
 
 save(

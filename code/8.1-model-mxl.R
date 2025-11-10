@@ -8,7 +8,7 @@ library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Load the data set:
 data <- read_csv(here('data', 'mxl.csv'))
 head(data)
@@ -22,22 +22,36 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gasoline
+# "powertrain"  = Indicates if the car is gasoline, hybrid, or electric
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Estimate preference space MXL model with linear price, fuelEconomy, and accelTime
 
-# First dummy code the powertrain variable
+# Dummy code any categorical variables (powertrain)
 data <- data %>%
-  cbc_encode(coding = "dummy", ref_levels = list(powertrain = "Gasoline"))
+  cbc_encode(
+    coding = "dummy",
+    ref_levels = list(powertrain = "Gasoline")
+  )
 
 # Estimate the model
 model_mxl_pref <- logitr(
-  data     = data,
-  outcome  = "choice",
-  obsID    = "obsID",
-  pars     = c('price', 'fuelEconomy', 'accelTime', 'powertrainElectric'),
-  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c(
+    'price',
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
+  randPars = c(
+    fuelEconomy = 'n',
+    accelTime = 'n',
+    powertrainElectric = 'n',
+    powertrainHybrid = 'n'
+  )
 )
 
 # View summary of results
@@ -50,17 +64,27 @@ model_mxl_pref$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model_mxl_pref$hessian)$values
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Estimate WTP space MXL model with linear price, fuelEconomy, and accelTime
 
 # Estimate the model
 model_mxl_wtp <- logitr(
-  data     = data,
-  outcome  = "choice",
-  obsID    = "obsID",
-  pars     = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  data = data,
+  outcome = "choice",
+  obsID = "obsID",
+  pars = c(
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
   scalePar = 'price',
-  randPars = c(fuelEconomy = 'n', accelTime = 'n', powertrainElectric = 'n')
+  randPars = c(
+    fuelEconomy = 'n',
+    accelTime = 'n',
+    powertrainElectric = 'n',
+    powertrainHybrid = 'n'
+  )
 )
 
 # View summary of results
@@ -73,7 +97,7 @@ model_mxl_wtp$gradient
 # (If all the eigenvalues are negative, the hessian is negative definite)
 eigen(model_mxl_wtp$hessian)$values
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Save model objects
 
 save(

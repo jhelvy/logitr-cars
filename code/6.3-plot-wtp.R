@@ -6,7 +6,7 @@ library(tidyverse)
 library(here)
 library(cowplot)
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Get WTP estimates with 95% CI
 
 # Method 1: Computed WTP from preference space model:
@@ -14,7 +14,7 @@ load(here("models", "model_mnl.RData")) # Load pref space model
 coefs <- coef(model_mnl)
 covariance <- vcov(model_mnl)
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
-wtp_draws <- -1 * (coef_draws[, 2:4] / coef_draws[, 1])
+wtp_draws <- -1 * (coef_draws[, 2:5] / coef_draws[, 1])
 wtp_ci1 <- ci(wtp_draws, level = 0.95)
 wtp_ci1
 
@@ -27,7 +27,7 @@ wtp_ci2 <- ci(wtp_draws, level = 0.95)
 wtp_ci2 <- wtp_ci2[-1, ] # Drop lambda (we won't plot this)
 wtp_ci2
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Plot results
 
 # Since the results above are the same, let's just pick one to work with:
@@ -37,15 +37,16 @@ wtp_ci <- wtp_ci2
 wtp_ci$par <- row.names(wtp_ci)
 wtp_fuelEconomy <- wtp_ci %>% filter(par == 'fuelEconomy')
 wtp_accelTime <- wtp_ci %>% filter(par == 'accelTime')
-wtp_powertrain <- wtp_ci %>% filter(par == 'powertrainElectric')
+wtp_powertrainElectric <- wtp_ci %>% filter(par == 'powertrainElectric')
+wtp_powertrainHybrid <- wtp_ci %>% filter(par == 'powertrainHybrid')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
 #   utility = The utility associated with each level (y-axis)
 df_fuelEconomy <- data.frame(level = c(20, 25, 30)) %>%
   mutate(
-    diff  = level - min(level),
-    mean  = diff * wtp_fuelEconomy$mean,
+    diff = level - min(level),
+    mean = diff * wtp_fuelEconomy$mean,
     lower = diff * wtp_fuelEconomy$lower,
     upper = diff * wtp_fuelEconomy$upper
   )
@@ -54,19 +55,19 @@ df_fuelEconomy
 
 df_accelTime <- data.frame(level = c(6, 7, 8)) %>%
   mutate(
-    diff  = level - min(level),
-    mean  = diff * wtp_accelTime$mean,
+    diff = level - min(level),
+    mean = diff * wtp_accelTime$mean,
     lower = diff * wtp_accelTime$lower,
     upper = diff * wtp_accelTime$upper
   )
 
 df_accelTime
 
-df_powertrain <- data.frame(level = c("Gasoline", "Electric")) %>%
+df_powertrain <- data.frame(level = c("Gasoline", "Electric", "Hybrid")) %>%
   mutate(
-    mean  = c(0, wtp_powertrain$mean),
-    lower = c(0, wtp_powertrain$lower),
-    upper = c(0, wtp_powertrain$upper)
+    mean = c(0, wtp_powertrainElectric$mean, wtp_powertrainHybrid$mean),
+    lower = c(0, wtp_powertrainElectric$lower, wtp_powertrainHybrid$lower),
+    upper = c(0, wtp_powertrainElectric$upper, wtp_powertrainHybrid$upper)
   )
 
 df_powertrain
@@ -126,13 +127,13 @@ ggsave(
   height = 2.3
 )
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Compare WTP for changes in all attributes
 
 # WTP for:
 # 10 mpg improvement in fuel economy
 # 3 sec improvement in acceleration time
-# Gasoline vs Electric powertrain
+# Gasoline vs Electric vs Hybrid powertrains
 
 df_compare <- wtp_ci
 cols <- c('mean', 'lower', 'upper')
@@ -141,7 +142,8 @@ df_compare[2, cols] <- df_compare[2, cols] * -3 # Acceleration Time
 df_compare$label <- c(
   "Fuel Economy:\n+10 mpg",
   "Accel. Time:\n-3 sec",
-  "Powertrain:\nElectric over Gasoline"
+  "Powertrain:\nElectric over Gasoline",
+  "Powertrain:\nHybrid over Gasoline"
 )
 
 barplot_mnl_wtp <- df_compare %>%

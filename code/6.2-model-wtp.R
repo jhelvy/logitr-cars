@@ -12,7 +12,7 @@ options(dplyr.width = Inf) # So you can see all of the columns
 data <- read_csv(here('data', 'mnl.csv'))
 head(data)
 
-# First dummy code the powertrain variable
+# Dummy code any categorical variables (powertrain)
 data <- data %>%
   cbc_encode(
     coding = "dummy",
@@ -24,7 +24,12 @@ model_mnl_wtp <- logitr(
   data = data,
   outcome = "choice",
   obsID = "obsID",
-  pars = c('fuelEconomy', 'accelTime', 'powertrainElectric'),
+  pars = c(
+    'fuelEconomy',
+    'accelTime',
+    'powertrainElectric',
+    'powertrainHybrid'
+  ),
   scalePar = 'price',
   numMultiStarts = 10 # Use a multi-start since log-likelihood is nonconvex
 )
