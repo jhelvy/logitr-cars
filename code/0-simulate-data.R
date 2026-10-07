@@ -24,8 +24,9 @@ design <- cbc_design(
   n_q = 8 # Number of questions per respondent
 )
 
-# View version of design with powertrain not dummy-coded
-cbc_decode(design)
+# Preview the design (categorical variables are shown in standard,
+# human-readable form by default)
+head(design)
 
 # Make survey with no_choice option ----
 
@@ -70,7 +71,7 @@ design_attspec <- cbc_design(
 )
 
 # Check to confirm balance and overlap in all levels is good
-cbc_inspect(cbc_decode(design_attspec))
+cbc_inspect(design_attspec)
 
 # Simulate choices ----
 
@@ -87,7 +88,10 @@ priors <- cbc_priors(
 data_mnl1 <- cbc_choices(
   design = design,
   priors = priors
-)
+) %>%
+  # cbc_choices() uses standard coding by default; convert to dummy coding
+  # to match the format expected by logitr
+  cbc_encode(coding = "dummy")
 
 # Choices using a different set of priors
 
@@ -102,7 +106,8 @@ priors2 <- cbc_priors(
 data_mnl2 <- cbc_choices(
   design = design,
   priors = priors2
-)
+) %>%
+  cbc_encode(coding = "dummy")
 
 priors_random <- cbc_priors(
   profiles = profiles,
@@ -128,7 +133,8 @@ priors_random <- cbc_priors(
 data_mxl <- cbc_choices(
   design = design,
   priors = priors_random
-)
+) %>%
+  cbc_encode(coding = "dummy")
 
 # Simulate choices for no_choice design
 priors_no_choice <- cbc_priors(
@@ -143,7 +149,8 @@ priors_no_choice <- cbc_priors(
 data_no_choice <- cbc_choices(
   design = design_no_choice,
   priors = priors_no_choice
-)
+) %>%
+  cbc_encode(coding = "dummy")
 
 # Simulate choices for alternative-specific attribute design
 priors_attspec <- cbc_priors(
@@ -158,7 +165,8 @@ priors_attspec <- cbc_priors(
 data_attspec <- cbc_choices(
   design = design_attspec,
   priors = priors_attspec
-)
+) %>%
+  cbc_encode(coding = "dummy")
 
 
 # Rearrange column names

@@ -25,17 +25,16 @@ head(profiles) # preview
 View(profiles)
 
 # Note now that the balance of the powertrain levels is not even:
-table(profiles_attspec$powertrain)
+table(profiles$powertrain)
 
 # Make a full-factorial design of experiment
 design <- cbc_design(
-  profiles   = profiles_attspec,
+  profiles   = profiles,
   n_resp     = 500, # Number of respondents
   n_alts     = 3, # Number of alternatives per question
   n_q        = 8, # Number of questions per respondent
   balance_by = 'powertrain' # Include since balance in profiles is not even
-) %>%
-  cbc_decode()
+)
 
 # Check to confirm balance and overlap in all levels is good
 cbc_inspect(design)
