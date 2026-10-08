@@ -20,5 +20,5 @@ install.packages(c(
 
 # Install development packages from GitHub
 
-pak::pak("jhelvy/jph")
-pak::pak("jhelvy/cbcTools")
+remotes::install_github("jhelvy/jph")
+remotes::install_github("jhelvy/cbcTools")
