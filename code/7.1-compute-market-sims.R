@@ -8,7 +8,7 @@ library(logitr)
 # Load estimated models
 load(here("models", "model_mnl.RData"))
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Single market simulation using the mnl model
 
 summary(model_mnl)
@@ -20,7 +20,8 @@ baseline <- data.frame(
   price = c(15, 25, 21),
   fuelEconomy = c(20, 100, 40),
   accelTime = c(8, 6, 7),
-  powertrainElectric = c(0, 1, 0)
+  powertrainElectric = c(0, 1, 0),
+  powertrainHybrid = c(0, 0, 1)
 )
 
 # Columns are attributes, rows are alternatives
@@ -38,7 +39,7 @@ sim_mnl <- predict(
 
 sim_mnl
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------
 # Multiple simulations using the mnl model
 
 # Read in market scenarios

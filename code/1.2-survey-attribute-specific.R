@@ -7,10 +7,10 @@ library(tidyverse)
 
 # Define profiles with attributes and levels
 profiles <- cbc_profiles(
-  price         = c(15, 20, 25), # Price ($1,000)
-  fuelEconomy   = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime     = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain    = c('Gasoline', 'Electric'),
+  price = c(15, 20, 25), # Price ($1,000)
+  fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
+  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain = c('Gasoline', 'Hybrid', 'Electric'),
   rangeElectric = c(0, 100, 150, 200, 250) # EV driving range (miles)
 ) %>%
   # Now restrict the range to appropriate levels based on the powertrain
@@ -19,7 +19,8 @@ profiles <- cbc_profiles(
     (powertrain != 'Electric') & (rangeElectric != 0),
   )
 
-head(profiles) # preview
+# Preview
+profiles
 
 # View the profiles to confirm that range is 0 for non-electric powertrains
 View(profiles)
@@ -29,15 +30,18 @@ table(profiles$powertrain)
 
 # Make a full-factorial design of experiment
 design <- cbc_design(
-  profiles   = profiles,
-  n_resp     = 500, # Number of respondents
-  n_alts     = 3, # Number of alternatives per question
-  n_q        = 8, # Number of questions per respondent
+  profiles = profiles,
+  n_resp = 500, # Number of respondents
+  n_alts = 3, # Number of alternatives per question
+  n_q = 8, # Number of questions per respondent
   balance_by = 'powertrain' # Include since balance in profiles is not even
 )
 
 # Check to confirm balance and overlap in all levels is good
 cbc_inspect(design)
+
+# Can also just compare counts by powertrain
+table(design$powertrain)
 
 # Check that range is always 0 when powertrain == "Gasoline"
 design %>%

@@ -13,7 +13,7 @@ profiles <- cbc_profiles(
   price = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
   accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain = c('Gasoline', 'Electric')
+  powertrain = c('Gasoline', 'Hybrid', 'Electric')
 )
 
 # Make a full-factorial design of experiment
@@ -24,8 +24,6 @@ design <- cbc_design(
   n_q = 8 # Number of questions per respondent
 )
 
-# Preview the design (categorical variables are shown in standard,
-# human-readable form by default)
 head(design)
 
 # Make survey with no_choice option ----
@@ -38,14 +36,19 @@ design_no_choice <- cbc_design(
   no_choice = TRUE
 )
 
+head(design_no_choice)
+
+# View dummy-coded version
+design_no_choice |>
+  cbc_encode('dummy')
 
 # Make attribute-specific survey ----
 
 profiles_attspec <- cbc_profiles(
-  price       = c(15, 20, 25), # Price ($1,000)
+  price = c(15, 20, 25), # Price ($1,000)
   fuelEconomy = c(20, 25, 30), # Fuel economy (mpg)
-  accelTime   = c(6, 7, 8), # 0-60 mph acceleration time (s)
-  powertrain  = c('Gasoline', 'Electric'),
+  accelTime = c(6, 7, 8), # 0-60 mph acceleration time (s)
+  powertrain = c('Gasoline', 'Hybrid', 'Electric'),
   # Note that we include 0 in the range below for the non-EV powertrains
   rangeElectric = c(0, 100, 150, 200, 250) # EV driving range (miles)
 ) %>%
@@ -82,7 +85,7 @@ priors <- cbc_priors(
   price = -0.7,
   fuelEconomy = 0.1,
   accelTime = -0.2,
-  powertrain = -4.0
+  powertrain = c(0.5, -4.0)
 )
 
 data_mnl1 <- cbc_choices(
@@ -100,7 +103,7 @@ priors2 <- cbc_priors(
   price = -0.6,
   fuelEconomy = 0.15,
   accelTime = -0.3,
-  powertrain = -1.0
+  powertrain = c(0.8, -1.0)
 )
 
 data_mnl2 <- cbc_choices(
@@ -124,8 +127,8 @@ priors_random <- cbc_priors(
   ),
   powertrain = rand_spec(
     dist = "n",
-    mean = -4,
-    sd = 5
+    mean = c(0.5, -4),
+    sd = c(2, 5)
   )
 )
 
@@ -142,7 +145,7 @@ priors_no_choice <- cbc_priors(
   price = -0.7,
   fuelEconomy = 0.1,
   accelTime = -0.2,
-  powertrain = -4.0,
+  powertrain = c(0.5, -4.0),
   no_choice = -15.0
 )
 
@@ -150,15 +153,15 @@ data_no_choice <- cbc_choices(
   design = design_no_choice,
   priors = priors_no_choice
 ) %>%
-  cbc_encode(coding = "dummy")
+  cbc_encode('standard')
 
 # Simulate choices for alternative-specific attribute design
 priors_attspec <- cbc_priors(
-  profiles      = profiles_attspec,
-  price         = -0.7,
-  fuelEconomy   = 0.1,
-  accelTime     = -0.2,
-  powertrain    = -4.0,
+  profiles = profiles_attspec,
+  price = -0.7,
+  fuelEconomy = 0.1,
+  accelTime = -0.2,
+  powertrain = c(0.5, -4.0),
   rangeElectric = 0.02
 )
 
@@ -180,7 +183,7 @@ varNames <- c(
   'price',
   'fuelEconomy',
   'accelTime',
-  'powertrainElectric'
+  'powertrain'
 )
 data_mnl1 <- data_mnl1[varNames]
 data_mnl2 <- data_mnl2[varNames]

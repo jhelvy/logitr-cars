@@ -15,12 +15,13 @@ load(here("models", "model_mnl.RData"))
 
 # Create a set of alternatives for which to simulate shares
 baseline <- data.frame(
-  altID = c(1, 2, 3),
-  obsID = c(1, 1, 1),
-  price = c(15, 25, 21),
-  fuelEconomy = c(20, 100, 40),
-  accelTime = c(8, 6, 7),
-  powertrainElectric = c(0, 1, 0)
+  altID              = c(1, 2, 3),
+  obsID              = c(1, 1, 1),
+  price              = c(15, 25, 21),
+  fuelEconomy        = c(20, 100, 40),
+  accelTime          = c(8, 6, 7),
+  powertrainElectric = c(0, 1, 0),
+  powertrainHybrid = c(0, 0, 1)
 )
 
 baseline
@@ -42,10 +43,10 @@ head(scenarios_price)
 # For each case, simulate the market share predictions
 sens_price <- predict(
   model_mnl,
-  newdata = scenarios_price,
-  obsID = 'obsID',
-  level = 0.95,
-  interval = 'confidence',
+  newdata    = scenarios_price,
+  obsID      = 'obsID',
+  level      = 0.95,
+  interval   = 'confidence',
   returnData = TRUE
 ) %>%
   # Keep only EV alternative
@@ -73,13 +74,17 @@ cases <- tribble(
     4,      2,     'fuelEconomy', 'high',  100*1.2,
     5,      2,     'fuelEconomy', 'low',   100*0.8,
     6,      2,     'accelTime',   'high',  6*0.8,
-    7,      2,     'accelTime',   'low',   6*1.2
+    7,      2,     'accelTime',   'low',   6*1.2,
+    8,      2,     'powertrainElectric', 'high', 0,
+    9,      2,     'powertrainElectric', 'low', 1,
+    10,     2,     'powertrainHybrid', 'high', 1,
+    11,     2,     'powertrainHybrid', 'low', 0
 )
 
 cases
 
 # Define scenarios
-n <- 7 # baseline + high & low for each attribute
+n <- 11 # baseline + high & low for each attribute
 scenarios_atts <- rep_df(baseline, n)
 scenarios_atts$obsID <- rep(seq(n), each = 3) # Reset obsIDs
 
@@ -91,7 +96,9 @@ scenarios_atts <- scenarios_atts %>%
     case = ifelse(is.na(case), "base", case),
     price = ifelse(attribute == 'price', value, price),
     fuelEconomy = ifelse(attribute == 'fuelEconomy', value, fuelEconomy),
-    accelTime = ifelse(attribute == 'accelTime', value, accelTime)
+    accelTime = ifelse(attribute == 'accelTime', value, accelTime),
+    powertrainElectric = ifelse(attribute == 'powertrainElectric', value, powertrainElectric),
+    powertrainHybrid = ifelse(attribute == 'powertrainHybrid', value, powertrainHybrid)
   )
 
 scenarios_atts
@@ -99,10 +106,10 @@ scenarios_atts
 # For each case, simulate the market share predictions
 sens_atts <- predict(
   model_mnl,
-  newdata = scenarios_atts,
-  obsID = 'obsID',
-  level = 0.95,
-  interval = 'confidence',
+  newdata    = scenarios_atts,
+  obsID      = 'obsID',
+  level      = 0.95,
+  interval   = 'confidence',
   returnData = TRUE
 ) %>%
   # Keep only EV alternative

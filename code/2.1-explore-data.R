@@ -18,13 +18,13 @@ head(data)
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
 # "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
 # "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric or gasoline
+# "powertrain"  = Indicates if the car is gasoline, hybrid, or electric
 
 # Look at counts of values in data:
 data %>% count(price)
 data %>% count(fuelEconomy)
 data %>% count(accelTime)
-data %>% count(powertrainElectric)
+data %>% count(powertrain)
 
 # Count number of times each alternative was chosen:
 data %>% count(altID, choice)
@@ -45,8 +45,8 @@ data %>%
 
 # Visualize how many times electric cars were chosen compared to gasoline cars:
 data %>%
-  count(powertrainElectric, choice)
+  count(powertrain, choice)
 
 data %>%
   ggplot() +
-  geom_col(aes(x = as.factor(powertrainElectric), y = choice))
+  geom_col(aes(x = as.factor(powertrain), y = choice))

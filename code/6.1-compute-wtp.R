@@ -26,7 +26,7 @@ covariance <- vcov(model_mnl)
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
 
 # Compute WTP for each coefficient draw
-wtp_draws = -1 * (coef_draws[, 2:4] / coef_draws[, 1])
+wtp_draws = -1 * (coef_draws[, 2:5] / coef_draws[, 1])
 head(wtp_draws)
 
 # For each coefficient, get the mean and 95% confidence interval of WTP
