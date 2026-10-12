@@ -102,7 +102,7 @@ tornado_data <- sens_atts %>%
 tornado_base <- jph::ggtornado(
   data = tornado_data,
   baseline = sens_atts$predicted_prob[1],
-  var = 'label',q
+  var = 'label',
   level = 'case',
   value = 'value',
   result = 'predicted_prob'

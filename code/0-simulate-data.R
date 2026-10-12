@@ -91,10 +91,7 @@ priors <- cbc_priors(
 data_mnl1 <- cbc_choices(
   design = design,
   priors = priors
-) %>%
-  # cbc_choices() uses standard coding by default; convert to dummy coding
-  # to match the format expected by logitr
-  cbc_encode(coding = "dummy")
+)
 
 # Choices using a different set of priors
 
@@ -109,8 +106,7 @@ priors2 <- cbc_priors(
 data_mnl2 <- cbc_choices(
   design = design,
   priors = priors2
-) %>%
-  cbc_encode(coding = "dummy")
+)
 
 priors_random <- cbc_priors(
   profiles = profiles,
@@ -136,8 +132,7 @@ priors_random <- cbc_priors(
 data_mxl <- cbc_choices(
   design = design,
   priors = priors_random
-) %>%
-  cbc_encode(coding = "dummy")
+)
 
 # Simulate choices for no_choice design
 priors_no_choice <- cbc_priors(
@@ -168,8 +163,7 @@ priors_attspec <- cbc_priors(
 data_attspec <- cbc_choices(
   design = design_attspec,
   priors = priors_attspec
-) %>%
-  cbc_encode(coding = "dummy")
+)
 
 
 # Rearrange column names
