@@ -2,7 +2,6 @@
 
 # Load libraries
 library(cbcTools)
-library(fastDummies)
 
 # Define profiles with attributes and levels
 profiles <- cbc_profiles(

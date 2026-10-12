@@ -2,7 +2,6 @@
 
 # Load libraries
 library(cbcTools)
-library(fastDummies)
 library(tidyverse)
 
 # Define profiles with attributes and levels
