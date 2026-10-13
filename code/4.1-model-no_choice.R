@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(cbcTools)
+library(fastDummies)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -27,13 +27,32 @@ head(data)
 # -------------------------------------------------------------
 # Estimate MNL model with outside good
 
-# Dummy code any categorical variables (powertrain)
+# Dummy code categorical variables (powertrain)
+# Missing values (NA) in "powertrain" get their own column, "powertrain_NA",
+# which we will NOT include in the model.
 data <- data %>%
-  cbc_encode(
-    coding = "dummy",
-    ref_levels = list(powertrain = "Gasoline")
-  ) %>%
-  as.data.frame() # plain data frame so head() shows a normal table
+  dummy_cols("powertrain")
+
+# The "no choice" alternative has NA for every attribute. Before replacing the
+# NAs, check that they only appear in the no-choice rows (all counts should be 0):
+data %>%
+  filter(no_choice == 0) %>%
+  summarise(across(everything(), ~ sum(is.na(.x))))
+
+# The no-choice alternative has all attributes equal to 0, so replace the NAs
+# with 0 in the attribute and dummy columns (and only those columns)
+data <- data %>%
+  mutate(
+    across(
+      c(
+        price, fuelEconomy, accelTime,
+        powertrain_Gasoline, powertrain_Hybrid, powertrain_Electric
+      ),
+      ~ replace_na(.x, 0)
+    )
+  )
+
+head(data) # preview
 
 # Estimate the model
 model_mnl_no_choice <- logitr(
@@ -44,8 +63,8 @@ model_mnl_no_choice <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid',
+    'powertrain_Electric',
+    'powertrain_Hybrid',
     'no_choice'
   )
 )

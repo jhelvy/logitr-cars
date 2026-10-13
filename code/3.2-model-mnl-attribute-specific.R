@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(cbcTools)
+library(fastDummies)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -29,13 +29,11 @@ head(data)
 # - Continuous (linear) coefficients for price, fuelEconomy, accelTime, and rangeElectric
 # - Dummy-coded (discrete) coefficients for powertrain
 
-# Dummy code any categorical variables (powertrain)
+# Dummy code categorical variables (powertrain)
+# This keeps all columns and adds one dummy column per level. The reference
+# level (Gasoline) is the one we leave out of "pars" in the model below.
 data <- data %>%
-  cbc_encode(
-    coding = "dummy",
-    ref_levels = list(powertrain = "Gasoline")
-  ) %>%
-  as.data.frame() # plain data frame so head() shows a normal table
+  dummy_cols("powertrain")
 
 # Estimate the model
 model_mnl_attspec <- logitr(
@@ -47,8 +45,8 @@ model_mnl_attspec <- logitr(
     'fuelEconomy',
     'accelTime',
     'rangeElectric',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   )
 )
 
@@ -63,7 +61,7 @@ model_mnl_attspec$gradient
 eigen(model_mnl_attspec$hessian)$values
 
 # What is the utility of each EV range (100, 150, 200, 250)?
-ev <- coef(model_mnl_attspec)['powertrainElectric']
+ev <- coef(model_mnl_attspec)['powertrain_Electric']
 range <- coef(model_mnl_attspec)['rangeElectric']
 ev100 <- ev + range * 100
 ev150 <- ev + range * 150

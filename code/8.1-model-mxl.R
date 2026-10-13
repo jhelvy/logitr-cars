@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(cbcTools)
+library(fastDummies)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
@@ -26,13 +26,11 @@ head(data)
 # -------------------------------------------------------------
 # Estimate preference space MXL model with linear price, fuelEconomy, and accelTime
 
-# Dummy code any categorical variables (powertrain)
+# Dummy code categorical variables (powertrain)
+# This keeps all columns and adds one dummy column per level. The reference
+# level (Gasoline) is the one we leave out of "pars" in the model below.
 data <- data %>%
-  cbc_encode(
-    coding = "dummy",
-    ref_levels = list(powertrain = "Gasoline")
-  ) %>%
-  as.data.frame() # plain data frame so head() shows a normal table
+  dummy_cols("powertrain")
 
 # Estimate the model
 model_mxl_pref <- logitr(
@@ -43,14 +41,14 @@ model_mxl_pref <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   ),
   randPars = c(
     fuelEconomy = 'n',
     accelTime = 'n',
-    powertrainElectric = 'n',
-    powertrainHybrid = 'n'
+    powertrain_Electric = 'n',
+    powertrain_Hybrid = 'n'
   )
 )
 
@@ -75,15 +73,15 @@ model_mxl_wtp <- logitr(
   pars = c(
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   ),
   scalePar = 'price',
   randPars = c(
     fuelEconomy = 'n',
     accelTime = 'n',
-    powertrainElectric = 'n',
-    powertrainHybrid = 'n'
+    powertrain_Electric = 'n',
+    powertrain_Hybrid = 'n'
   )
 )
 

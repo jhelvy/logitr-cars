@@ -3,7 +3,7 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(cbcTools)
+library(fastDummies)
 library(jph)
 
 options(dplyr.width = Inf) # So you can see all of the columns
@@ -28,22 +28,21 @@ head(data)
 # -------------------------------------------------------------
 # Estimate MNL model with linear price, fuelEconomy, and accelTime
 
-# Dummy code any categorical variables (powertrain)
+# Dummy code categorical variables (powertrain and group)
+# Gasoline and group A are the reference levels (left out of the model)
 data <- data %>%
-  cbc_encode(
-    coding = "dummy",
-    ref_levels = list(powertrain = "Gasoline")
-  ) %>%
-  as.data.frame() # plain data frame so head() shows a normal table
+  dummy_cols(c("powertrain", "group"))
 
-# Create interactions of each variable with groupB
+head(data) # preview
+
+# Create interactions of each variable with group_B
 data <- data %>%
   mutate(
-    price_B = price * groupB,
-    fuelEconomy_B = fuelEconomy * groupB,
-    accelTime_B = accelTime * groupB,
-    powertrainElectric_B = powertrainElectric * groupB,
-    powertrainHybrid_B = powertrainHybrid * groupB
+    price_B = price * group_B,
+    fuelEconomy_B = fuelEconomy * group_B,
+    accelTime_B = accelTime * group_B,
+    powertrain_Electric_B = powertrain_Electric * group_B,
+    powertrain_Hybrid_B = powertrain_Hybrid * group_B
   )
 head(data)
 
@@ -56,14 +55,14 @@ model_mnl_groups <- logitr(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid',
+    'powertrain_Electric',
+    'powertrain_Hybrid',
     # Introduce group interactions with all main effects
     'price_B',
     'fuelEconomy_B',
     'accelTime_B',
-    'powertrainElectric_B',
-    'powertrainHybrid_B'
+    'powertrain_Electric_B',
+    'powertrain_Hybrid_B'
   )
 )
 
@@ -97,23 +96,23 @@ coef_draws_A <- coef_draws %>%
     price,
     fuelEconomy,
     accelTime,
-    powertrainElectric,
-    powertrainHybrid
+    powertrain_Electric,
+    powertrain_Hybrid
   )
 coef_draws_B <- coef_draws %>%
   mutate(
     price = price + price_B,
     fuelEconomy = fuelEconomy + fuelEconomy_B,
     accelTime = accelTime + accelTime_B,
-    powertrainElectric = powertrainElectric + powertrainElectric_B,
-    powertrainHybrid = powertrainHybrid + powertrainHybrid_B
+    powertrain_Electric = powertrain_Electric + powertrain_Electric_B,
+    powertrain_Hybrid = powertrain_Hybrid + powertrain_Hybrid_B
   ) %>%
   select(
     price,
     fuelEconomy,
     accelTime,
-    powertrainElectric,
-    powertrainHybrid
+    powertrain_Electric,
+    powertrain_Hybrid
   )
 
 # -------------------------------------------------------------
@@ -128,8 +127,8 @@ ci(wtp_B, level = 0.95)
 # Alternatively, can just directly estimate WTP for each group
 
 # First, split data into groups
-data_A <- data %>% filter(groupB == 0)
-data_B <- data %>% filter(groupB == 1)
+data_A <- data %>% filter(group_B == 0)
+data_B <- data %>% filter(group_B == 1)
 
 # Estimate separate models for each group
 model_mnl_wtp_groupA <- logitr(
@@ -139,8 +138,8 @@ model_mnl_wtp_groupA <- logitr(
   pars = c(
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   ),
   scalePar = 'price'
 )
@@ -152,8 +151,8 @@ model_mnl_wtp_groupB <- logitr(
   pars = c(
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   ),
   scalePar = 'price'
 )
@@ -205,8 +204,8 @@ data_sim <- data.frame(
   price = c(15, 25, 21),
   fuelEconomy = c(20, 100, 40),
   accelTime = c(8, 6, 7),
-  powertrainElectric = c(0, 1, 0),
-  powertrainHybrid = c(0, 0, 1)
+  powertrain_Electric = c(0, 1, 0),
+  powertrain_Hybrid = c(0, 0, 1)
 )
 
 # Use the logit_probs() function to compute the probabilities

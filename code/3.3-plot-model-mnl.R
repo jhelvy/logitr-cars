@@ -56,7 +56,7 @@ df_accelTime
 
 df_powertrain <- data.frame(level = c("Gasoline", "Hybrid", "Electric")) %>%
   mutate(
-    utility = c(0, coefs['powertrainHybrid'], coefs['powertrainElectric'])
+    utility = c(0, coefs['powertrain_Hybrid'], coefs['powertrain_Electric'])
   )
 
 df_powertrain

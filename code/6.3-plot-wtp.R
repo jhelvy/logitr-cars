@@ -36,8 +36,8 @@ wtp_ci <- wtp_ci2
 wtp_ci$par <- row.names(wtp_ci)
 wtp_fuelEconomy <- wtp_ci %>% filter(par == 'fuelEconomy')
 wtp_accelTime <- wtp_ci %>% filter(par == 'accelTime')
-wtp_powertrainElectric <- wtp_ci %>% filter(par == 'powertrainElectric')
-wtp_powertrainHybrid <- wtp_ci %>% filter(par == 'powertrainHybrid')
+wtp_powertrainElectric <- wtp_ci %>% filter(par == 'powertrain_Electric')
+wtp_powertrainHybrid <- wtp_ci %>% filter(par == 'powertrain_Hybrid')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)

@@ -81,8 +81,8 @@ labels <- data.frame(
     'price',
     'fuelEconomy',
     'accelTime',
-    'powertrainElectric',
-    'powertrainHybrid'
+    'powertrain_Electric',
+    'powertrain_Hybrid'
   ),
   label = c(
     'Price ($1,000)',

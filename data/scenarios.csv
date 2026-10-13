@@ -1,4 +1,4 @@
-obsID,altID,price,fuelEconomy,accelTime,powertrainElectric,powertrainHybrid
+obsID,altID,price,fuelEconomy,accelTime,powertrain_Electric,powertrain_Hybrid
 1,1,15,30,8,0,1
 1,2,20,30,7,1,0
 1,3,20,25,7,1,0

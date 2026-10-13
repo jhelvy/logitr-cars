@@ -31,8 +31,8 @@ coef_ci$par <- row.names(coef_ci)
 coef_price <- coef_ci %>% filter(par == 'price')
 coef_fuelEconomy <- coef_ci %>% filter(par == 'fuelEconomy')
 coef_accelTime <- coef_ci %>% filter(par == 'accelTime')
-coef_powertrainHybrid <- coef_ci %>% filter(par == 'powertrainHybrid')
-coef_powertrainElectric <- coef_ci %>% filter(par == 'powertrainElectric')
+coef_powertrainHybrid <- coef_ci %>% filter(par == 'powertrain_Hybrid')
+coef_powertrainElectric <- coef_ci %>% filter(par == 'powertrain_Electric')
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)
