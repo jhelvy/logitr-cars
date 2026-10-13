@@ -4,13 +4,12 @@
 library(logitr)
 library(tidyverse)
 library(cbcTools)
-library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'mnl.csv'))
+data <- read_csv(file.path('data', 'mnl.csv'))
 head(data)
 
 # Variables:
@@ -34,7 +33,8 @@ data <- data %>%
   cbc_encode(
     coding = "dummy",
     ref_levels = list(powertrain = "Gasoline")
-  )
+  ) %>%
+  as.data.frame() # plain data frame so head() shows a normal table
 
 head(data) # preview
 
@@ -67,5 +67,5 @@ eigen(model_mnl$hessian)$values
 
 save(
   model_mnl,
-  file = here("models", "model_mnl.RData")
+  file = file.path("models", "model_mnl.RData")
 )

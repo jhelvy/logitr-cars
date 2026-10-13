@@ -3,11 +3,10 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(here)
 library(cowplot)
 
 # Load estimated models
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 
 # -------------------------------------------------------------
 # Some tips for working with model objects
@@ -114,7 +113,7 @@ plot_model_mnl
 
 # Save plots
 ggsave(
-  filename = here('figs', 'model_mnl.png'),
+  filename = file.path('figs', 'model_mnl.png'),
   plot = plot_model_mnl,
   width = 10,
   height = 2.3

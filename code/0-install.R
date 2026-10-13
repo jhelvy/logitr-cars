@@ -6,7 +6,6 @@ install.packages(c(
   "cowplot",
   "fastDummies",
   "ggrepel",
-  "here",
   "janitor",
   "kableExtra",
   "knitr",

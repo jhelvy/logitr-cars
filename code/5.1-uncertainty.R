@@ -2,7 +2,6 @@
 
 # Load libraries & functions
 library(tidyverse)
-library(here)
 library(logitr)
 library(cowplot)
 
@@ -10,7 +9,7 @@ library(cowplot)
 # Compute 95% confidence interval using simulation
 
 # Load estimated models
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 
 # Get the model coefficients and covariance matrix
 coefs <- coef(model_mnl)
@@ -137,7 +136,7 @@ plot_mnl_linear_unc
 
 # Save plots
 ggsave(
-  filename = here('figs', 'mnl_linear_unc.png'),
+  filename = file.path('figs', 'mnl_linear_unc.png'),
   plot = plot_mnl_linear_unc,
   width = 10,
   height = 2.3

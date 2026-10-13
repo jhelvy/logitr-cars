@@ -4,14 +4,13 @@
 library(logitr)
 library(tidyverse)
 library(cbcTools)
-library(here)
 library(jph)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'mnl_2groups.csv'))
+data <- read_csv(file.path('data', 'mnl_2groups.csv'))
 head(data)
 
 # Variables:
@@ -34,7 +33,8 @@ data <- data %>%
   cbc_encode(
     coding = "dummy",
     ref_levels = list(powertrain = "Gasoline")
-  )
+  ) %>%
+  as.data.frame() # plain data frame so head() shows a normal table
 
 # Create interactions of each variable with groupB
 data <- data %>%
@@ -80,7 +80,7 @@ eigen(model_mnl_groups$hessian)$values
 # Save model objects
 save(
   model_mnl_groups,
-  file = here("models", "model_mnl_groups.RData")
+  file = file.path("models", "model_mnl_groups.RData")
 )
 
 # -------------------------------------------------------------
@@ -175,7 +175,7 @@ eigen(model_mnl_wtp_groupB$hessian)$values
 save(
   model_mnl_wtp_groupA,
   model_mnl_wtp_groupB,
-  file = here("models", "model_mnl_group_wtp.RData")
+  file = file.path("models", "model_mnl_group_wtp.RData")
 )
 
 # -------------------------------------------------------------

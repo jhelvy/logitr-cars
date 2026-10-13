@@ -3,12 +3,11 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the estimated model
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 
 # Get the model coefficients
 coefs <- coef(model_mnl)

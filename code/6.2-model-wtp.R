@@ -4,12 +4,11 @@
 library(logitr)
 library(tidyverse)
 library(cbcTools)
-library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # Load the data set:
-data <- read_csv(here('data', 'mnl.csv'))
+data <- read_csv(file.path('data', 'mnl.csv'))
 head(data)
 
 # Dummy code any categorical variables (powertrain)
@@ -17,7 +16,8 @@ data <- data %>%
   cbc_encode(
     coding = "dummy",
     ref_levels = list(powertrain = "Gasoline")
-  )
+  ) %>%
+  as.data.frame() # plain data frame so head() shows a normal table
 
 # Estimate the model
 model_mnl_wtp <- logitr(
@@ -45,11 +45,11 @@ model_mnl_wtp$gradient
 eigen(model_mnl_wtp$hessian)$values
 
 # Compare computed versus estimated WTP
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 wtpCompare(model_mnl, model_mnl_wtp, scalePar = 'price')
 
 # Save model
 save(
   model_mnl_wtp,
-  file = here("models", "model_mnl_wtp.RData")
+  file = file.path("models", "model_mnl_wtp.RData")
 )

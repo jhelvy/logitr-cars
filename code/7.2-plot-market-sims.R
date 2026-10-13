@@ -2,10 +2,9 @@
 
 # Load libraries & functions
 library(tidyverse)
-library(here)
 
 # Load simulation results
-load(here("sims", "mnl.RData"))
+load(file.path("sims", "mnl.RData"))
 
 # Bar plot of probabilities for single market simulation (with 95% CI)
 sim_mnl %>%
@@ -24,7 +23,7 @@ sim_mnl %>%
 
 # Save plot
 ggsave(
-  filename = here('figs', 'sim_mnl.png'),
+  filename = file.path('figs', 'sim_mnl.png'),
   width = 4,
   height = 3.5
 )
@@ -46,7 +45,7 @@ sim_mnl_multi %>%
 
 # Save plot
 ggsave(
-  filename = here('figs', 'sim_multi.png'),
+  filename = file.path('figs', 'sim_multi.png'),
   width = 8,
   height = 7
 )

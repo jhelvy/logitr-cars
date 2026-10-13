@@ -3,14 +3,13 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(here)
 library(cowplot)
 
 # -------------------------------------------------------------
 # Get WTP estimates with 95% CI
 
 # Method 1: Computed WTP from preference space model:
-load(here("models", "model_mnl.RData")) # Load pref space model
+load(file.path("models", "model_mnl.RData")) # Load pref space model
 coefs <- coef(model_mnl)
 covariance <- vcov(model_mnl)
 coef_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
@@ -19,7 +18,7 @@ wtp_ci1 <- ci(wtp_draws, level = 0.95)
 wtp_ci1
 
 # Method 2: Estimate WTP in WTP space model:
-load(here("models", "model_mnl_wtp.RData")) # Load estimated models
+load(file.path("models", "model_mnl_wtp.RData")) # Load estimated models
 coefs <- coef(model_mnl_wtp)
 covariance <- vcov(model_mnl_wtp)
 wtp_draws <- as.data.frame(MASS::mvrnorm(10^4, coefs, covariance))
@@ -121,7 +120,7 @@ plot_mnl_wtp
 
 # Save plots
 ggsave(
-  filename = here('figs', 'mnl_wtp.png'),
+  filename = file.path('figs', 'mnl_wtp.png'),
   plot = plot_mnl_wtp,
   width = 8,
   height = 2.3
@@ -157,7 +156,7 @@ barplot_mnl_wtp
 
 # Save plots
 ggsave(
-  filename = here('figs', 'mnl_wtp_barplot.png'),
+  filename = file.path('figs', 'mnl_wtp_barplot.png'),
   plot = barplot_mnl_wtp,
   width = 5,
   height = 3

@@ -2,10 +2,9 @@
 
 # Load libraries & functions
 library(tidyverse)
-library(here)
 
 # Load simulation results
-load(here("sims", "sens_price_mnl.RData"))
+load(file.path("sims", "sens_price_mnl.RData"))
 
 # -----------------------------------------------------------------------------
 # Make a line plot of the market sensitivity to price (with uncertainty)
@@ -33,7 +32,7 @@ share_price_plot
 
 # Save plot
 ggsave(
-  filename = here('figs', 'share_price_plot.png'),
+  filename = file.path('figs', 'share_price_plot.png'),
   plot = share_price_plot,
   width = 5,
   height = 4
@@ -68,7 +67,7 @@ rev_price_plot
 
 # Save plot
 ggsave(
-  filename = here('figs', 'rev_price_plot.png'),
+  filename = file.path('figs', 'rev_price_plot.png'),
   plot = rev_price_plot,
   width = 5,
   height = 4
@@ -117,7 +116,7 @@ tornado_plot
 
 # Save plot
 ggsave(
-  filename = here('figs', 'tornado_plot.png'),
+  filename = file.path('figs', 'tornado_plot.png'),
   plot = tornado_plot,
   width = 5,
   height = 3

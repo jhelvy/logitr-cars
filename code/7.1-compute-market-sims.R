@@ -2,11 +2,10 @@
 
 # Load libraries & functions
 library(tidyverse)
-library(here)
 library(logitr)
 
 # Load estimated models
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 
 # -------------------------------------------------------------
 # Single market simulation using the mnl model
@@ -43,7 +42,7 @@ sim_mnl
 # Multiple simulations using the mnl model
 
 # Read in market scenarios
-scenarios <- read_csv(here('data', 'scenarios.csv'))
+scenarios <- read_csv(file.path('data', 'scenarios.csv'))
 head(scenarios)
 
 # Use the predict() function to compute the probabilities
@@ -62,5 +61,5 @@ head(sim_mnl_multi)
 save(
   sim_mnl,
   sim_mnl_multi,
-  file = here("sims", "mnl.RData")
+  file = file.path("sims", "mnl.RData")
 )

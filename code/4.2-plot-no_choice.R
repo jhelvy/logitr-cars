@@ -3,11 +3,10 @@
 # Load libraries
 library(logitr)
 library(tidyverse)
-library(here)
 library(cowplot)
 
 # Load estimated models
-load(here("models", "model_mnl_no_choice.RData"))
+load(file.path("models", "model_mnl_no_choice.RData"))
 
 # -------------------------------------------------------------
 # Plot results
@@ -94,7 +93,7 @@ plots_no_choice
 
 # Save plots
 ggsave(
-  filename = here('figs', 'mnl_no_choice.png'),
+  filename = file.path('figs', 'mnl_no_choice.png'),
   plot = plots_no_choice,
   width = 12,
   height = 2.3

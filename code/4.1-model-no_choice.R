@@ -4,13 +4,12 @@
 library(logitr)
 library(tidyverse)
 library(cbcTools)
-library(here)
 
 options(dplyr.width = Inf) # So you can see all of the columns
 
 # -------------------------------------------------------------
 # Load the data set:
-data <- read_csv(here('data', 'no_choice.csv'))
+data <- read_csv(file.path('data', 'no_choice.csv'))
 head(data)
 
 # Variables:
@@ -33,7 +32,8 @@ data <- data %>%
   cbc_encode(
     coding = "dummy",
     ref_levels = list(powertrain = "Gasoline")
-  )
+  ) %>%
+  as.data.frame() # plain data frame so head() shows a normal table
 
 # Estimate the model
 model_mnl_no_choice <- logitr(
@@ -63,5 +63,5 @@ eigen(model_mnl_no_choice$hessian)$values
 # Save model object
 save(
   model_mnl_no_choice,
-  file = here("models", "model_mnl_no_choice.RData")
+  file = file.path("models", "model_mnl_no_choice.RData")
 )

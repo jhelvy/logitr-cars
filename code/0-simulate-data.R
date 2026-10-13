@@ -4,7 +4,6 @@
 library(tidyverse)
 library(cbcTools)
 library(readr)
-library(here)
 
 # Make basic surveys ----
 
@@ -196,8 +195,8 @@ data_mnl_2groups <- rbind(data_mnl2, temp)
 data_mnl_2groups$obsID <- rep(seq(500 * 8), each = 3)
 
 # Save data
-write_csv(data_mnl1, here('data', 'mnl.csv'))
-write_csv(data_mxl, here('data', 'mxl.csv'))
-write_csv(data_mnl_2groups, here('data', 'mnl_2groups.csv'))
-write_csv(data_no_choice, here('data', 'no_choice.csv'))
-write_csv(data_attspec, here('data', 'mnl_attspec.csv'))
+write_csv(data_mnl1, file.path('data', 'mnl.csv'))
+write_csv(data_mxl, file.path('data', 'mxl.csv'))
+write_csv(data_mnl_2groups, file.path('data', 'mnl_2groups.csv'))
+write_csv(data_no_choice, file.path('data', 'no_choice.csv'))
+write_csv(data_attspec, file.path('data', 'mnl_attspec.csv'))

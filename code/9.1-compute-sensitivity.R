@@ -3,12 +3,11 @@
 
 # Load libraries & functions
 library(tidyverse)
-library(here)
 library(logitr)
 library(jph)
 
 # Load estimated models
-load(here("models", "model_mnl.RData"))
+load(file.path("models", "model_mnl.RData"))
 
 # -----------------------------------------------------------------------------
 # Sensitivity of market share to changes in *price*
@@ -125,5 +124,5 @@ sens_atts
 save(
   sens_price,
   sens_atts,
-  file = here("sims", "sens_price_mnl.RData")
+  file = file.path("sims", "sens_price_mnl.RData")
 )
